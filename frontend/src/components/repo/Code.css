@@ -1,0 +1,28 @@
+*{
+    color: white;
+}
+
+.code-container{
+    width: 80vw;
+    margin: auto;
+}
+
+.code-container .main .d-1{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.code-container .main .d-1 .left-span{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.code-container .main .d-1 .right-span{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
