@@ -1,0 +1,7 @@
+#hr{
+    color: #373E47; /* Works in some browsers */
+    background-color: #373E47; /* Ensures color applies */
+    height: 0.5px; /* Adjust thickness */
+    width: 100%;
+    border: none; /* Removes default border */
+}
