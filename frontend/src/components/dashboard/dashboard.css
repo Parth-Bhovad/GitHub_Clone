@@ -1,0 +1,71 @@
+#dashboard {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.leftAside {
+    background-color: #0D1117;
+    color: white;
+    width: 20%;
+    height: 100%;
+    padding: 1rem;
+}
+
+main {
+    background-color: #010409;
+    color: white;
+    width: 60%;
+    height: 100%;
+    border-right: 2px solid #373E47;
+    border-left: 2px solid #373E47;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+}
+
+main #search input{
+    margin-bottom: 2rem;
+    border: 2px solid #373E47;
+    background-color: transparent;
+    height: 30px;
+    width: 40vw;
+    border-radius: 5px;
+    padding: 0.5rem;
+    color: white;
+}
+
+main .repoContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 2rem;
+    /* border-bottom:2px solid #373E47; */
+    width: 80%;
+    /* border-bottom:2px solid #373E47; */
+    border-top:2px solid #373E47;
+}
+
+main  #hr {
+    color: #373E47; /* Works in some browsers */
+    background-color: #373E47; /* Ensures color applies */
+    height: 2px; /* Adjust thickness */
+    width: 80%;
+    border: none; /* Removes default border */
+  }
+
+main .repoContainer h2,
+main .repoContainer p {
+    margin: 0;
+}
+
+.rightAside {
+    background-color: #0D1117;
+    color: white;
+    width: 20%;
+    height: 100%;
+}

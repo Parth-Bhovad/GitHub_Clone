@@ -1,0 +1,121 @@
+.profile-page-wrapper {
+  display: flex;
+  min-height: 100vh;
+  color: whitesmoke;
+  width: 100%;
+  background-color: #070a10;
+  /* flex-wrap: wrap; */
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-start;
+}
+
+.user-profile-section {
+  width: 30vw;
+  /* min-height: 100vh; */
+  display: flex;
+  flex-direction: column;
+  padding: 40px 10px;
+  border-right: 2px solid #373E47;
+}
+
+.user-repo-section {
+  margin: 0px auto;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.user-name {
+  /* width: 250px; */
+  margin: 10px 20px 10px 10px;
+  /* margin: 10px auto; */
+}
+
+.profile-image, .profile-image img{
+  margin: 10px auto;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background-color: grey;
+}
+
+.name {
+  padding-left: 6rem;
+}
+
+.follow-btn {
+  background-color: #20272d;
+  width: 300px;
+  margin: 10px auto;
+  height: 40px;
+  border-radius: 10px;
+  color: whitesmoke;
+  border: none;
+  outline: none;
+}
+
+.follower {
+  display: flex;
+  justify-content: center;
+  width: 250px;
+  height: 30px;
+  gap: 10px;
+  margin: 10px auto;
+}
+
+.repo-card-wrapper {
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 40px 20px;
+}
+
+.repo {
+  border: 0.5px solid grey;
+  border-radius: 10px;
+  width: 400px;
+  height: 210px;
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.repo-name {
+  cursor: pointer;
+  color: #408ced;
+  font-size: 20px;
+}
+
+.description {
+  color: grey;
+  font-size: 15px;
+}
+
+.heat-map-section {
+  width: 70vw;
+  margin-top: 5rem;
+}
+
+@media screen and (max-width: 750px) {
+  .repo {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 570px) {
+  .user-profile-section {
+    margin: auto;
+  }
+
+  .profile-page-wrapper {
+    display: block;
+  }
+}
+
+#logout:hover {
+  border: 1px solid white;
+}
