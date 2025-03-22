@@ -74,18 +74,22 @@ const Dashboard = () => {
                     {searchResults.length == 0 ? repositories.map((repo) => {
                         return (
                             <>
-                                <div key={repo._id} className="repoContainer">
-                                    <h2>{repo.name}</h2>
-                                    <p>{repo.description}</p>
-                                </div>
+                                <Link to="/repo/show" style={{ textDecoration: "none" }}>
+                                    <div key={repo._id} className="repoContainer">
+                                        <h2>{repo.name}</h2>
+                                        <p>{repo.description}</p>
+                                    </div>
+                                </Link>
                             </>
                         );
                     }) : searchResults.map((repo) => {
                         return (
-                            <div key={repo._id} className="repoContainer">
-                                <h4>{repo.name}</h4>
-                                <p>{repo.description}</p>
-                            </div>
+                            <Link to="/repo/show" style={{ textDecoration: "none" }}>
+                                <div key={repo._id} className="repoContainer">
+                                    <h4>{repo.name}</h4>
+                                    <p>{repo.description}</p>
+                                </div>
+                            </Link>
                         );
                     })}
                 </main>
