@@ -1,0 +1,22 @@
+.table{
+    margin-top: 2rem;
+}
+
+.table .top{
+    background-color:var(--grey-btn);
+    border: 1px solid #373E47;
+    border-radius: 5px;
+}
+
+.table .row{
+    border: 1px solid #373E47;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 40px;
+    border-radius: 5px;
+}
+
+.table .row span{
+    padding: 1rem;
+}
