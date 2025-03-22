@@ -75,3 +75,10 @@
     height: 35px;
     color: white;
 }
+
+@media (max-width:1000px) {
+    .container{
+        width: 100vw;
+        margin: 1rem;
+    }
+}
