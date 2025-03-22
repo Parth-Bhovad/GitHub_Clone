@@ -1,0 +1,19 @@
+.heading{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.heading p{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.heading span{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
