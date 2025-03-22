@@ -1,10 +1,30 @@
 import React, { useEffect, useState } from "react";
-
+import axios from 'axios';
 import "./CreateRepo.css";
 
 import Navbar from "../Navbar";
 
 const CreateRepo = () => {
+   const [repoName, setRepoName] = useState("");
+    const [description, setDescription] = useState("");
+    // const [visibility, setVisibility] = useState("");
+    const [selectedOption, setSelectedOption] = useState(false);
+    const handleUpload =  async() => {
+        const userId = localStorage.getItem("userId");
+        try {
+            const response = await axios.post("http://localhost:3000/repo/create", {
+                name:repoName,
+                description:description,
+                visibility:selectedOption,
+                owner:userId,
+            });
+
+            console.log(response);
+        } catch (error) {
+            console.log("error during repo creating", error.message);
+        }
+    }
+
     return (
         <>
             <Navbar />
@@ -31,23 +51,23 @@ const CreateRepo = () => {
                         <div className="reponame-container">
                             <p>Repository name*</p>
                             <div className="reponame">
-                                <input type="text" name="name" />
+                                <input type="text" name="name" value={repoName} onChange={(e)=> setRepoName(e.target.value)}/>
                             </div>
                         </div>
 
                     </div>
                     <p>Great repository names are short and memorable. Need inspiration? How about potential-octo-enigma ?</p>
                     <div className="description">
-                    <label htmlFor="description">Description (optional)</label>
-                    <input type="text" name="description" id="description" />
+                        <label htmlFor="description">Description (optional)</label>
+                        <input type="text" name="description" id="description" value={description} onChange={(e) => setDescription(e.target.value)} />
                     </div>
                     <hr />
                 </div>
 
                 <div className="d-3">
-                    <input type="radio" name="visibility" id="public" />
+                    <input type="radio" name="visibility" id="public" value={"true"} checked={selectedOption === true} onChange={(e) => setSelectedOption(e.target.value === "true")} />
                     <label htmlFor="public">Public</label>
-                    <input type="radio" name="visibility" id="private" />
+                    <input type="radio" name="visibility" id="private" value={"false"} checked={selectedOption === false} onChange={(e) => setSelectedOption(e.target.value === "true")} />
                     <label htmlFor="private">Private</label>
 
                     <hr />
@@ -58,7 +78,7 @@ const CreateRepo = () => {
                     <hr />
                 </div>
 
-                <button>Create repository</button>
+                <button onClick={handleUpload}>Create repository</button>
             </div>
         </>
     );
