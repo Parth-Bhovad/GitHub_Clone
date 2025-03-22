@@ -1,0 +1,7 @@
+.setup{
+    background-color: var(--black-background);
+}
+
+.setup .guide{
+    background-color: var(--grey-btn);
+}
