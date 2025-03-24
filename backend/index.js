@@ -16,7 +16,9 @@ const { commitRepo } = require("./controllers/commit");
 const { pushRepo } = require("./controllers/push");
 const { pullRepo } = require("./controllers/pull");
 const { revertRepo } = require("./controllers/revert");
+const {addRemoteRepo} = require("./controllers/addRemoteRepo");
 const { error } = require("console");
+const { argv } = require("process");
 
 dotenv.config();
 
@@ -49,6 +51,14 @@ yargs(hideBin(process.argv))
         })
     }, (argv) => {
         revertRepo(argv.commitID)
+    })
+    .command("remote add origin <link>", "Add a remote repository to your local Git project", (yargs) => {
+        yargs.positional("link", {
+            describe:"link to add remote repo in local project",
+            type:"string"
+        })
+    }, (argv) => {
+        addRemoteRepo(argv.link)
     })
     .demandCommand(1, "You need at least one command")
     .help().argv;
