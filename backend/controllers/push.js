@@ -10,7 +10,7 @@ async function pushRepo() {
     const repoPath = path.resolve(process.cwd(), ".git");
     const commitsPath = path.join(repoPath, "commits");
 
-    const configPath = path.resolve(process.cwd(), "config", "userConfig.json");
+    const configPath = path.resolve(process.cwd(),".git", "userConfig", "userConfig.json");
 
     const userConfig = await fs.readFile(configPath, "utf8")
     const config = JSON.parse(userConfig);
