@@ -4,7 +4,7 @@ const { s3, S3_BUCKET } = require("../config/aws-config");
 const supabase = require("../config/supabaseConfig");
 
 const getCommitId = async () => {
-    const configPath = path.resolve(process.cwd(), "config", "userConfig.json");
+    const configPath = path.resolve(process.cwd(),".git", "userConfig", "userConfig.json");
     const userConfig = await fs.readFile(configPath, "utf8")
     const config = JSON.parse(userConfig);
     const userId = config.userId;
