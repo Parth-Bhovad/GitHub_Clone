@@ -5,6 +5,8 @@ const dotenv = require("dotenv");
 var ObjectId = require("mongodb").ObjectId;
 const fs = require("fs").promises;
 const path = require("path");
+const supabase = require("../config/supabaseConfig");
+const { mkdir } = require("fs");
 
 dotenv.config();
 const uri = process.env.MONGODB_URI;
@@ -66,6 +68,16 @@ const signup = async (req, res) => {
             { expiresIn: "1h" }
         );
 
+        // Correctly resolve path
+        const configFolderPath = path.resolve(process.cwd(), ".git", "userConfig");
+        //Creating directory to store user id
+        await fs.mkdir(configFolderPath, { recursive: true });
+
+        const configPath = path.join(configFolderPath, "userConfig.json");
+
+        // Save userId to config file (correctly using await)
+        await fs.writeFile(configPath, JSON.stringify({ userId: user._id }));
+
         res.json({ token, userId: result.insertId });
 
     } catch (error) {
@@ -87,12 +99,12 @@ const uploadProfileUrl = async (req, res) => {
     }
 
     const result = await userCollection.updateOne(
-        { _id: objectId }, 
+        { _id: objectId },
         { $set: { profileUrl: file.path } } // Assuming you want to store file path
     );
     console.log("uploading...");
     console.log(file.path);
-    res.json({result});
+    res.json({ result });
 }
 
 const getProfileUrl = async (req, res) => {
@@ -101,9 +113,9 @@ const getProfileUrl = async (req, res) => {
     const userCollection = db.collection("users");
     const userId = req.params.id;
     console.log(userId);
-    
+
     try {
-        const user = await userCollection.find({_id:new ObjectId(userId)}).next();
+        const user = await userCollection.find({ _id: new ObjectId(userId) }).next();
         console.log(user);
         const profileUrl = user.profileUrl;
         console.log(profileUrl);
@@ -131,18 +143,12 @@ const login = async (req, res) => {
             return res.status(400).json({ message: "Invalid credential" });
         }
 
-        // Correctly resolve path
-        const configPath = path.resolve(process.cwd(), "config", "userConfig.json");
-
-        // Save userId to config file (correctly using await)
-        await fs.writeFile(configPath, JSON.stringify({ userId: user._id }));
-
         const token = jwt.sign({ id: user._id },
             process.env.JWT_SECRET_KEY,
             { expiresIn: "1h" }
         );
 
-    res.cookie("token", token);
+        res.cookie("token", token);
 
         res.json({ token, userId: user._id });
     } catch (error) {
