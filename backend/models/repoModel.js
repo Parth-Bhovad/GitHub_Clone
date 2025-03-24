@@ -21,6 +21,10 @@ const RepositorySchema = new Schema({
         ref:"User",
         required:true
     },
+    commitIds:[{
+        type:String,
+        ref:"Commit",
+    }],
     issues:[{
         type:Schema.Types.ObjectId,
         ref:"Issue",
