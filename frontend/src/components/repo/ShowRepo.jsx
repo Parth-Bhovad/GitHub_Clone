@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { UnderlineNav } from '@primer/react'
+import { useParams } from "react-router-dom";
 
 //Importing components
 import Navbar from "../Navbar";
 import Code from "./Code";
 import Issue from "./Issue"
+import RepoGuide from "./RepoGuide";
 
 export default function ShowRepo() {
     const [activeTab, setActiveTab] = useState("Code");
 
+    let {reponame} = useParams();
     return (
         <>
             <Navbar />
@@ -24,8 +27,9 @@ export default function ShowRepo() {
 
             {/*Render components*/}
             <div>
-                {activeTab === "Code" && <Code />}
-                {activeTab === "Issue" && <Issue />}
+                {/* {activeTab === "Code" && <Code reponame={reponame}/>}
+                {activeTab === "Issue" && <Issue />} */}
+                <RepoGuide/>
             </div>
         </>
     );
