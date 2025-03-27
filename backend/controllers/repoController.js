@@ -5,10 +5,10 @@ const User = require("../models/userModel");
 
 
 const createRepository = async (req, res) => {
-    const { owner, name, issues, content, description, visibility } = req.body;
+    const { owner, reponame, issues, content, description, visibility } = req.body;
 
     try {
-        if (!name) {
+        if (!reponame) {
             return res.status(400).json({ error: "Repostitoy name is required" });
         }
 
@@ -32,9 +32,7 @@ const createRepository = async (req, res) => {
 
 const getAllRepositories = async (req, res) => {
     try {
-        const repositories = await Repository.find({})
-            .populate("owner")
-            .populate("issues")
+        const repositories = await Repository.find({});
         res.json(repositories);
     } catch (error) {
         console.error("Error in fetching repo", error.message);
@@ -61,7 +59,7 @@ const fetchRepositoryByName = async (req, res) => {
     const repoName = req.params.name;
 
     try {
-        const repository = await Repository.findOne({ name: repoName })
+        const repository = await Repository.findOne({ reponame: repoName })
             .populate("owner")
             .populate("issues")
         res.json(repository)
