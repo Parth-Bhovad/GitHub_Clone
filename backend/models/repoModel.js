@@ -2,10 +2,14 @@ const mongoose = require("mongoose");
 const {Schema} = mongoose;
 
 const RepositorySchema = new Schema({
-    name:{
+    reponame:{
         type:String,
         required:true,
         unique:true,
+    },
+    username:{
+        type:String,
+        required:true,
     },
     description:{
         type:String
