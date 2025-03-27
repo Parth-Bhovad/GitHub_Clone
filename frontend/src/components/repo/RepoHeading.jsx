@@ -4,10 +4,10 @@ import Label from '../utils/Label';
 import Avatar from '../user/UserAvatar';
 import "./RepoHeading.css";
 
-const RepoHeading = () => {
+const RepoHeading = ({reponame}) => {
     return (
         <div className="heading">
-            <p><Avatar />RepoName  <Label /></p>
+            <p><Avatar />{reponame}  <Label /></p>
             <span>
                 <ActionMenu />
                 <ActionMenu />
