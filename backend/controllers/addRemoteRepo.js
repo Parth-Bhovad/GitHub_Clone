@@ -5,7 +5,7 @@ const addRemoteRepo = async (link) => {
     const refsPath = path.resolve(process.cwd(), ".git", "refs");
     try {
         await fs.mkdir(refsPath, {recursive:true});
-        await fs.writeFile(path.join(refsPath, "remoteRef"), JSON.stringify(link));
+        await fs.writeFile(path.join(refsPath, "remoteRef.json"), JSON.stringify({remoteRef:link}));
         console.log("remote refs added locally");
     } catch (error) {
         console.log("error", error);
