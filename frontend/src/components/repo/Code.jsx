@@ -7,11 +7,11 @@ import BranchName from '../utils/BranchName';
 import RepoTable from "../utils/RepoTable";
 import Blankslate from "../utils/BlankSlate";
 import RepoHeading from './RepoHeading';
-export default function Code() {
+export default function Code({reponame}) {
     return (
         <>
             <div className="code-container">
-                <RepoHeading />
+                <RepoHeading reponame={reponame}/>
                 <Hr />
                 <div className="main">
                     <div className="d-1">
