@@ -61,7 +61,7 @@ const Dashboard = () => {
                     {suggestedRepositories.map((repo) => {
                         return (
                             <div key={repo._id}>
-                                <p>{`${repo.owner.username}/${repo.name}`}</p>
+                                <p>{`${repo.username}/${repo.reponame}`}</p>
                             </div>
                         )
                     })}
@@ -74,9 +74,9 @@ const Dashboard = () => {
                     {searchResults.length == 0 ? repositories.map((repo) => {
                         return (
                             <>
-                                <Link to="/repo/show" style={{ textDecoration: "none" }}>
+                                <Link to={`/${repo.username}/${repo.reponame}`} style={{ textDecoration: "none" }}>
                                     <div key={repo._id} className="repoContainer">
-                                        <h2>{repo.name}</h2>
+                                        <h2>{repo.reponame}</h2>
                                         <p>{repo.description}</p>
                                     </div>
                                 </Link>
