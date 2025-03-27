@@ -56,7 +56,7 @@ const ProjectRoutes = () => {
             element: <CreateRepo />
         },
         {
-            path: "/repo/show",
+            path: "/:username/:reponame",
             element: <ShowRepo />
         },
         {
