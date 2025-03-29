@@ -4,13 +4,9 @@ const {Schema} = mongoose;
 const CommitSchema = new Schema({
     _id:{
         type:String,
-        required:true,
-        unique:true
     },
-    repoId:{
-        type:Schema.Types.ObjectId,
-        ref: "Repository",
-        required: true
+    reponame:{
+        type:String
     },
     msg:{
         type:String,
@@ -20,12 +16,12 @@ const CommitSchema = new Schema({
         type:Date,
         required:true
     },
-    filePaths:[{
-        default:[],
-        type:String,
-        required:true,
-    }]
-}, { _id: false });  // Prevents Mongoose from auto-generating _id
+    filePaths: {
+        type: [String],    // ✅ Proper way to define array of strings
+        required: true,
+        default: []        // ✅ Default value at the array level
+    }
+}, { _id: false }); // Prevents Mongoose from auto-generating _id
 
 const Commit = mongoose.model("Commit", CommitSchema);
 
