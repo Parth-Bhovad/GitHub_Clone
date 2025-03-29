@@ -3,6 +3,11 @@ const path = require("path");
 const { s3, S3_BUCKET } = require("../config/aws-config");
 const supabase = require("../config/supabaseConfig");
 const recursion = require("../experiment/recursion");
+const mongoose = require("mongoose");
+
+//importing models
+const RepoFilePaths = require("../models/repoFilePathsModel");
+const Commit = require("../models/commitModel");
 
 async function pushRepo() {
     console.log("Push function called");
@@ -15,9 +20,13 @@ async function pushRepo() {
     const ref = await fs.readFile(remoteRefPath);
     const { remoteRef } = JSON.parse(ref);
     const url = new URL(remoteRef);
-    pathSegments = url.pathname.split("/").filter(Boolean);
+    let pathSegments = url.pathname.split("/").filter(Boolean);
+
+    const commitJsonPath = path.join(commitDir, "commitsJson");
+    const commitsJson = await fs.readdir(commitJsonPath);
 
     const startUrl = `${pathSegments[0]}/${pathSegments[1]}`;
+    let bucketFilePaths = [];
     try {
         let results = await recursion(commitPaths);
         const relativePaths = results.map((result) => path.relative(commitPaths, result));
@@ -25,7 +34,7 @@ async function pushRepo() {
         for (const result of results) {
             const finalUrl = path.join(startUrl, relativePaths[i]);
             console.log(finalUrl);
-            const fileContent = fs.readFile(result);
+            const fileContent = await fs.readFile(result);
             const { data, error } = await supabase
                 .storage
                 .from('.git')
@@ -36,11 +45,46 @@ async function pushRepo() {
             } else {
                 console.log(`Uploaded: ${result}`);
             }
-
+            bucketFilePaths.push(finalUrl);
             i++;
         }
 
+        const mongoUri = process.env.MONGODB_URI;
+        mongoose.connect(mongoUri)
+            .then(() => console.log("MongoDB connected"))
+            .catch((error) => console.error("Unable to connect :", error));
+
+
+        const repoFilePath = await RepoFilePaths.findOne({ reponame: pathSegments[1] });
+
+        if (repoFilePath) {
+            const newBucketFilePaths = repoFilePath.bucketFilePaths.concat(bucketFilePaths);
+            await RepoFilePaths.updateOne(
+                { reponame: pathSegments[1] },
+                { $set: { bucketFilePaths: newBucketFilePaths } }
+            );
+            console.log("if");
+        } else {
+            const repoFilePath = new RepoFilePaths({ reponame: `${pathSegments[1]}`, bucketFilePaths });
+            await repoFilePath.save();
+            console.log("else");
+        }
+
+        for (const commitJson of commitsJson) {
+            console.log(commitJson);
+            const commitFile = await fs.readFile(path.join(commitJsonPath, commitJson));
+            const commit = JSON.parse(commitFile);
+            console.log(commit);
+
+            const newCommit = new Commit({ msg: commit.msg, date: commit.date, filePaths: commit.filePaths, _id: commit._id, reponame: pathSegments[1] });
+            await newCommit.save();
+            console.log(newCommit);
+        }
+
+        await mongoose.connection.close();
+        console.log("🧹 MongoDB connection closed.");
         console.log("all commits pushed to S3.");
+        process.exit(0);
     } catch (error) {
         console.error("Error pushing to S3:", error);
     }
