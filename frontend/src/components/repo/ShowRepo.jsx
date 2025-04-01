@@ -10,8 +10,9 @@ import RepoGuide from "./RepoGuide";
 
 export default function ShowRepo() {
     const [activeTab, setActiveTab] = useState("Code");
+    const [isPush, setIsPush] = useState(true);
 
-    let {reponame} = useParams();
+    let { reponame } = useParams();
     return (
         <>
             <Navbar />
@@ -26,11 +27,13 @@ export default function ShowRepo() {
             </UnderlineNav>
 
             {/*Render components*/}
-            <div>
-                {/* {activeTab === "Code" && <Code reponame={reponame}/>}
-                {activeTab === "Issue" && <Issue />} */}
-                <RepoGuide/>
-            </div>
+            {isPush === true ?
+                <div>
+                    {activeTab === "Code" && <Code reponame={reponame} />}
+                    {activeTab === "Issue" && <Issue />}
+                </div>
+                :
+                <div><RepoGuide /></div>}
         </>
     );
 }
