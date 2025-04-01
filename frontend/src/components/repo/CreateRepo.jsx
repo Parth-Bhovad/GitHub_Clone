@@ -5,18 +5,31 @@ import "./CreateRepo.css";
 import Navbar from "../Navbar";
 
 const CreateRepo = () => {
-   const [repoName, setRepoName] = useState("");
+    const [reponame, setRepoName] = useState("");
     const [description, setDescription] = useState("");
+    const [username, setUsername] = useState("");
     // const [visibility, setVisibility] = useState("");
     const [selectedOption, setSelectedOption] = useState(false);
-    const handleUpload =  async() => {
-        const userId = localStorage.getItem("userId");
+    const userId = localStorage.getItem("userId");
+    useEffect(() => {
+        const fetchUsernamFromId = async (userId) => {
+            const response = await axios.get(
+                `http://localhost:3000/username/${userId}`
+            );
+            setUsername(response.data);
+        }
+
+        fetchUsernamFromId(userId);
+    }, [username]);
+
+    const handleUpload = async () => {
         try {
             const response = await axios.post("http://localhost:3000/repo/create", {
-                name:repoName,
-                description:description,
-                visibility:selectedOption,
-                owner:userId,
+                reponame,
+                description,
+                visibility: selectedOption,
+                owner: userId,
+                username
             });
 
             console.log(response);
@@ -51,7 +64,7 @@ const CreateRepo = () => {
                         <div className="reponame-container">
                             <p>Repository name*</p>
                             <div className="reponame">
-                                <input type="text" name="name" value={repoName} onChange={(e)=> setRepoName(e.target.value)}/>
+                                <input type="text" name="name" value={reponame} onChange={(e) => setRepoName(e.target.value)} />
                             </div>
                         </div>
 
