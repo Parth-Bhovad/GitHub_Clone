@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const Repository = require("../models/repoModel");
 const Issue = require("../models/issueModel");
 const User = require("../models/userModel");
+const RepoFilePaths = require("../models/repoFilePathsModel");
+const supabase = require("../config/supabaseConfig");
 
 
 const createRepository = async (req, res) => {
@@ -146,6 +148,29 @@ const deleteRepositoryById = async (req, res) => {
     }
 };
 
+const getAllFilePaths = async (req, res) => {
+    console.log("getting paths...");
+    
+    let reponame = req.params.reponame;
+
+    const filePaths = await RepoFilePaths.findOne({reponame});
+    console.log(filePaths);
+    res.json(filePaths.bucketFilePaths);
+}
+
+const getSupabsePublicUrl = async (req, res) => {
+    console.log("getting public url...");
+    console.log(req.params);
+    const path = req.params[0];
+    const { data } = supabase.storage.from(".git").getPublicUrl(path);
+    if (!data || !data.publicUrl) {
+        throw new Error("Failed to generate public URL.");
+    }
+
+    console.log("🌍 Public URL:", data.publicUrl);
+    res.json(data.publicUrl);
+}
+
 module.exports = {
     createRepository,
     getAllRepositories,
@@ -154,5 +179,7 @@ module.exports = {
     fetchRepositoriesForCurrentUser,
     updateRepositoryById,
     toggleVisibiltyById,
-    deleteRepositoryById
+    deleteRepositoryById,
+    getAllFilePaths,
+    getSupabsePublicUrl
 };
