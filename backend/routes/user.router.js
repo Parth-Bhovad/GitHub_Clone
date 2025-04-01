@@ -10,10 +10,11 @@ const userRouter = express.Router();
 const attachUserId = require("../middleware/attachUserId");
 
 userRouter.get("/allUsers", userController.getAllUsers);
-userRouter.get("/userProfile/:id", userController.getUserProfile);
+userRouter.get("/username/:id", userController.getCurrentUsername);
+userRouter.get("/userProfile/:username", userController.getUserProfile);
 userRouter.post("/signup", userController.signup);
-userRouter.post("/upload/:id", attachUserId, upload.single("profileUrl"), userController.uploadProfileUrl);
-userRouter.get("/profileUrl/:id", userController.getProfileUrl);
+userRouter.post("/upload/:username", attachUserId, upload.single("profileUrl"), userController.uploadProfileUrl);
+userRouter.get("/profileUrl/:username", userController.getProfileUrl);
 userRouter.post("/login", userController.login);
 userRouter.put("/updateProfile/:id", userController.updateUserProfile);
 userRouter.delete("/deleteProfile/:id", userController.deleteUserProfile);
