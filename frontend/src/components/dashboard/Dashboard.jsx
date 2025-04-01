@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import "./dashboard.css";
 import Navbar from "../Navbar";
-import { Link } from "react-router-dom";
+import { Link, Links } from "react-router-dom";
 const Dashboard = () => {
 
     const [repositories, setRepositories] = useState([]);
@@ -9,11 +9,10 @@ const Dashboard = () => {
     const [suggestedRepositories, setSuggestedRepositories] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
 
+    const userId = localStorage.getItem("userId");
+    console.log(userId);
+
     useEffect(() => {
-        const userId = localStorage.getItem("userId");
-        console.log(userId);
-
-
         const fetchRepositories = async () => {
             try {
                 const response = await fetch(`http://localhost:3000/repo/user/${userId}`);
@@ -60,9 +59,11 @@ const Dashboard = () => {
                     <h3>Suggested Repositories</h3>
                     {suggestedRepositories.map((repo) => {
                         return (
+                            <Link to={`/${repo.username}/${repo.reponame}`}>
                             <div key={repo._id}>
                                 <p>{`${repo.username}/${repo.reponame}`}</p>
                             </div>
+                            </Link>
                         )
                     })}
                 </aside>
