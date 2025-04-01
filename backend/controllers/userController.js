@@ -90,8 +90,7 @@ const uploadProfileUrl = async (req, res) => {
     await connectClient();
     const db = client.db("GitHubClone");
     const userCollection = db.collection("users");
-    const userId = req.params.id;
-    const objectId = new ObjectId(userId);
+    const username = req.params.username;
 
     const file = req.file;
     if (!file) {
@@ -99,7 +98,7 @@ const uploadProfileUrl = async (req, res) => {
     }
 
     const result = await userCollection.updateOne(
-        { _id: objectId },
+        { username },
         { $set: { profileUrl: file.path } } // Assuming you want to store file path
     );
     console.log("uploading...");
@@ -111,11 +110,10 @@ const getProfileUrl = async (req, res) => {
     await connectClient();
     const db = client.db("GitHubClone");
     const userCollection = db.collection("users");
-    const userId = req.params.id;
-    console.log(userId);
+    const username = req.params.username;
 
     try {
-        const user = await userCollection.find({ _id: new ObjectId(userId) }).next();
+        const user = await userCollection.find({ username }).next();
         console.log(user);
         const profileUrl = user.profileUrl;
         console.log(profileUrl);
@@ -157,14 +155,14 @@ const login = async (req, res) => {
 };
 
 const getUserProfile = async (req, res) => {
-    const currentID = req.params.id
+    const username = req.params.username
     try {
         await connectClient();
         const db = client.db("GitHubClone");
         const userCollection = db.collection("users");
 
         const user = await userCollection.findOne({
-            _id: new ObjectId(currentID)
+            username
         });
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -222,6 +220,19 @@ const deleteUserProfile = async (req, res) => {
     res.json("user deleted");
 };
 
+const getCurrentUsername = async (req, res) => {
+    const userId = req.params.id;
+    await connectClient();
+    const db = client.db("GitHubClone");
+    const userCollection = db.collection("users");
+
+    const user = await userCollection.findOne({
+        _id: new ObjectId(userId),
+    });
+
+    res.json(user.username);
+}
+
 module.exports = {
     getAllUsers,
     signup,
@@ -230,5 +241,6 @@ module.exports = {
     login,
     getUserProfile,
     updateUserProfile,
-    deleteUserProfile
+    deleteUserProfile,
+    getCurrentUsername
 };
