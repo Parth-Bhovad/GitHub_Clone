@@ -2,7 +2,8 @@ const express = require("express");
 const repoController = require("../controllers/repoController");
 
 const repoRouter = express.Router();
-
+repoRouter.get("/repo/allFilesPath/:reponame", repoController.getAllFilePaths);
+repoRouter.get("/repo/publicUrl/*", repoController.getSupabsePublicUrl)
 repoRouter.post("/repo/create", repoController.createRepository);
 repoRouter.get("/repo/all", repoController.getAllRepositories);
 repoRouter.get("/repo/:id", repoController.fetchRepositoryById);
