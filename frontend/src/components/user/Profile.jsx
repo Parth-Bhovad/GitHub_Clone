@@ -7,11 +7,14 @@ import { UnderlineNav } from "@primer/react";
 import { BookIcon, RepoIcon } from "@primer/octicons-react";
 import HeatMapProfile from "./HeatMap";
 import { useAuth } from "../../authContext";
+import { useParams } from "react-router-dom";
 
 const Profile = () => {
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState({ username: "username" });
   const { setCurrentUser } = useAuth();
+
+  const {username} = useParams();
 
   const [file, setFile] = useState(null);
   const [profileUrl, setProfileUrl] = useState(null);
@@ -32,7 +35,7 @@ const Profile = () => {
     formData.append("profileUrl", file);
 
     try {
-      let response = await axios.post(`http://localhost:3000/upload/${userId}`, formData, {
+      let response = await axios.post(`http://localhost:3000/upload/${username}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       console.log(response.data);
@@ -44,15 +47,14 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchUserDetails = async () => {
-      const userId = localStorage.getItem("userId");
+      // const userId = localStorage.getItem("userId");
 
-      if (userId) {
+      if (username) {
         try {
           const response = await axios.get(
-            `http://localhost:3000/userProfile/${userId}`
+            `http://localhost:3000/userProfile/${username}`
           );
           setUserDetails(response.data);
-          console.log(response.data.profileUrl);
         } catch (err) {
           console.error("Cannot fetch user details: ", err);
         }
@@ -63,11 +65,11 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchUserProfileUrl = async () => {
-      const userId = localStorage.getItem("userId");
+      // const userId = localStorage.getItem("userId");
 
-      if (userId) {
+      if (username) {
         try {
-          const response = await axios.get(`http://localhost:3000/profileUrl/${userId}`);
+          const response = await axios.get(`http://localhost:3000/profileUrl/${username}`);
 
           setProfileUrl(response.data);
         } catch (error) {
