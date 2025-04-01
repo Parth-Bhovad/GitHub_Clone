@@ -48,7 +48,7 @@ const ProjectRoutes = () => {
             element: <Signup />
         },
         {
-            path: "/profile",
+            path: "/profile/:username",
             element: <Profile />
         },
         {
