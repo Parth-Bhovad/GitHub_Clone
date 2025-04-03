@@ -21,6 +21,9 @@ const createRepository = async (req, res) => {
         const newRepository = new Repository({ ...req.body });
         const result = await newRepository.save();
 
+        const existingUser = await User.findByIdAndUpdate({_id:owner}, {repositories:newRepository._id});
+        console.log(existingUser);
+
         res.status(201).json({
             message: "Repository created",
             repositoryID: result._id,
@@ -152,10 +155,11 @@ const getAllFilePaths = async (req, res) => {
     console.log("getting paths...");
     
     let reponame = req.params.reponame;
+console.log(reponame);
 
-    const filePaths = await RepoFilePaths.findOne({reponame});
+    const filePaths = await Repository.findOne({reponame});
     console.log(filePaths);
-    res.json(filePaths.bucketFilePaths);
+    res.json(filePaths.content);
 }
 
 const getSupabsePublicUrl = async (req, res) => {
