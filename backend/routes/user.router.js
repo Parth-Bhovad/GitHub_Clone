@@ -10,6 +10,7 @@ const userRouter = express.Router();
 const attachUserId = require("../middleware/attachUserId");
 
 userRouter.get("/allUsers", userController.getAllUsers);
+userRouter.patch("/following/:id", userController.following);
 userRouter.get("/username/:id", userController.getCurrentUsername);
 userRouter.get("/userProfile/:username", userController.getUserProfile);
 userRouter.post("/signup", userController.signup);
