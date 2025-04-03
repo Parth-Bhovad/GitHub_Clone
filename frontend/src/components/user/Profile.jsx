@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 const Profile = () => {
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState({ username: "username" });
+  const [isFollow, setIsFollow] = useState();
   const { setCurrentUser } = useAuth();
 
   const {username} = useParams();
@@ -44,6 +45,13 @@ const Profile = () => {
       console.error("Upload failed", error);
     }
   };
+
+  const handleFollow = async () => {
+    let response = await axios.patch(`http://localhost:3000/following/${userDetails._id}`,{}, { withCredentials: true });
+    console.log(response);
+    setIsFollow(response.data.isFollow);
+  }
+
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -143,7 +151,7 @@ const Profile = () => {
             <h1>{userDetails.username}</h1>
           </div>
 
-          <button className="follow-btn">Follow</button>
+          <button className="follow-btn" onClick={handleFollow}>{isFollow ? "Unfollow": "Follow"}</button>
 
           <div className="follower">
             <p>10 Follower</p>
