@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Splitter, SplitterPanel } from 'primereact/splitter';
 import TreeView from "../utils/TreeView";
-import { createClient } from "@supabase/supabase-js";
 import "./ShowCode.css";
 import axios from 'axios';
 
