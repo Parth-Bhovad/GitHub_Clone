@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import "./CreateRepo.css";
+import "../../styles/pages/createRepo.css";
 
-import Navbar from "../Navbar";
+import Navbar from "../layout/Navbar";
 
 const CreateRepo = () => {
     const [reponame, setRepoName] = useState("");

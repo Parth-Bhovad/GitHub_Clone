@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import "./Code.css"
+import "../../styles/components/code.css"
 import axios from 'axios'
 
-import Hr from "../utils/hr/Hr"
+import Hr from "../utils/Hr"
 import ActionMenu from "../utils/ActionMenu"
 import BranchName from '../utils/BranchName';
 import RepoTable from "../utils/RepoTable";

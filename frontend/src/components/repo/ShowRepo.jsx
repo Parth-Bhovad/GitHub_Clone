@@ -3,7 +3,7 @@ import { UnderlineNav } from '@primer/react'
 import { useParams } from "react-router-dom";
 
 //Importing components
-import Navbar from "../Navbar";
+import Navbar from "../layout/Navbar";
 import Code from "./Code";
 import Issue from "./Issue"
 import RepoGuide from "./RepoGuide";

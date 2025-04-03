@@ -1,6 +1,6 @@
-import React, { useEffect, useId, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "./Navbar.css";
+import "../../styles/layouts/navbar.css";
 import axios from "axios";
 
 const Navbar = () => {

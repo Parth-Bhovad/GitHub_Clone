@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Splitter, SplitterPanel } from 'primereact/splitter';
 import TreeView from "../utils/TreeView";
-import "./ShowCode.css";
+import "../../styles/components/showCode.css";
 import axios from 'axios';
 
 export default function ShowCode() {

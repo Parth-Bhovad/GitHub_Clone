@@ -1,6 +1,6 @@
 import React from "react";
 import RepoHeading from "./RepoHeading";
-import "./RepoGuide.css"
+import "../../styles/components/RepoGuide.css"
 const RepoGuide = () => {
     return(
 <>
