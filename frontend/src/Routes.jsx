@@ -60,7 +60,7 @@ const ProjectRoutes = () => {
             element: <ShowRepo />
         },
         {
-            path: "/repo/show/code",
+            path: "/:username/:reponame/show",
             element: <ShowCode />
         }
     ]);
