@@ -6,7 +6,7 @@ const recursion = require("../experiment/recursion");
 const mongoose = require("mongoose");
 
 //importing models
-const RepoFilePaths = require("../models/repoFilePathsModel");
+const Repo = require("../models/repoModel");
 const Commit = require("../models/commitModel");
 
 async function pushRepo() {
@@ -24,51 +24,17 @@ async function pushRepo() {
 
     const commitJsonPath = path.join(commitDir, "commitsJson");
     const commitsJson = await fs.readdir(commitJsonPath);
-
+    // const decodedRepoName = decodeURIComponent(pathSegments[1]);
+    // console.log(decodedRepoName);
     const startUrl = `${pathSegments[0]}/${pathSegments[1]}`;
     let bucketFilePaths = [];
     try {
-        let results = await recursion(commitPaths);
-        const relativePaths = results.map((result) => path.relative(commitPaths, result));
-        let i = 0;
-        for (const result of results) {
-            const finalUrl = path.join(startUrl, relativePaths[i]);
-            console.log(finalUrl);
-            const fileContent = await fs.readFile(result);
-            const { data, error } = await supabase
-                .storage
-                .from('.git')
-                .upload(finalUrl, fileContent, { upsert: true });
-
-            if (error) {
-                console.error("Upload failed:", error.message);
-            } else {
-                console.log(`Uploaded: ${result}`);
-            }
-            bucketFilePaths.push(finalUrl);
-            i++;
-        }
-
         const mongoUri = process.env.MONGODB_URI;
         mongoose.connect(mongoUri)
             .then(() => console.log("MongoDB connected"))
             .catch((error) => console.error("Unable to connect :", error));
 
-
-        const repoFilePath = await RepoFilePaths.findOne({ reponame: pathSegments[1] });
-
-        if (repoFilePath) {
-            const newBucketFilePaths = repoFilePath.bucketFilePaths.concat(bucketFilePaths);
-            await RepoFilePaths.updateOne(
-                { reponame: pathSegments[1] },
-                { $set: { bucketFilePaths: newBucketFilePaths } }
-            );
-            console.log("if");
-        } else {
-            const repoFilePath = new RepoFilePaths({ reponame: `${pathSegments[1]}`, bucketFilePaths });
-            await repoFilePath.save();
-            console.log("else");
-        }
+        let commitIds = [];
 
         for (const commitJson of commitsJson) {
             console.log(commitJson);
@@ -79,6 +45,20 @@ async function pushRepo() {
             const newCommit = new Commit({ msg: commit.msg, date: commit.date, filePaths: commit.filePaths, _id: commit._id, reponame: pathSegments[1] });
             await newCommit.save();
             console.log(newCommit);
+            let commitId = newCommit._id;
+            console.log(commitId);
+            commitIds.push(commitId);
+        }
+        console.log(commitIds);
+
+        const exitingRepo = await Repo.findOne({ reponame: pathSegments[1] });
+        console.log(exitingRepo);
+        if (exitingRepo) {
+            const newBucketFilePaths = exitingRepo.content.concat(bucketFilePaths);
+
+            let updatedRepo = await Repo.findOneAndUpdate({reponame: pathSegments[1]}, { $set: { content: newBucketFilePaths, commitIds } },{ returnDocument: "after" });
+            console.log(updatedRepo);
+            
         }
 
         await mongoose.connection.close();

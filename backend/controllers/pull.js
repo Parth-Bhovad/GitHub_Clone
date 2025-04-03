@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 
 //importing models
 const repoFilePaths = require("../models/repoFilePathsModel");
+const Repository = require("../models/repoModel");
 
 async function pullRepo() {
     console.log("pull function called");
@@ -24,8 +25,8 @@ async function pullRepo() {
         mongoose.connect(mongoUri)
             .then(() => console.log("MongoDB connected"))
 
-        const existingDoc = await repoFilePaths.findOne({ reponame: pathSegments[1] });
-        const filePaths = existingDoc.bucketFilePaths;
+        const existingRepo = await Repository.findOne({ reponame: pathSegments[1] });
+        const filePaths = existingRepo.content;
 
         for (const filePath of filePaths) {
             const { data, error } = await supabase
