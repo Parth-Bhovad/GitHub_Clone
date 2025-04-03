@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from "../../authContext";
 
 import axios from 'axios';
+import { Link } from "react-router-dom";
 
-import { Link, PageHeader } from '@primer/react';
+import { PageHeader } from '@primer/react';
 import { Box, Button } from "@primer/react";
 import "./auth.css"
 
