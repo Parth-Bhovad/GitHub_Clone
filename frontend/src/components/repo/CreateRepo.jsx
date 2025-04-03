@@ -13,9 +13,13 @@ const CreateRepo = () => {
     const userId = localStorage.getItem("userId");
     useEffect(() => {
         const fetchUsernamFromId = async (userId) => {
-            const response = await axios.get(
-                `http://localhost:3000/username/${userId}`
-            );
+            try {
+                const response = await axios.get(
+                    `http://localhost:3000/username/${userId}`
+                );
+            } catch (error) {
+                console.log(error);
+            }
             setUsername(response.data);
         }
 
@@ -31,8 +35,6 @@ const CreateRepo = () => {
                 owner: userId,
                 username
             });
-
-            console.log(response);
         } catch (error) {
             console.log("error during repo creating", error.message);
         }

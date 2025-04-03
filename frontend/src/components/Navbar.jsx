@@ -10,10 +10,14 @@ const [username, setUsername] = useState("");
     
     useEffect(() => {
         const fetchUsernamFromId = async (userId) => {
-            const response = await axios.get(
-                `http://localhost:3000/username/${userId}`
-              );
-            setUsername(response.data);
+            try {
+                const response = await axios.get(
+                    `http://localhost:3000/username/${userId}`
+                  );
+                setUsername(response.data);
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         fetchUsernamFromId(userId);

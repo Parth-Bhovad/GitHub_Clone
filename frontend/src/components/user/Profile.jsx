@@ -47,9 +47,12 @@ const Profile = () => {
   };
 
   const handleFollow = async () => {
-    let response = await axios.patch(`http://localhost:3000/following/${userDetails._id}`,{}, { withCredentials: true });
-    console.log(response);
-    setIsFollow(response.data.isFollow);
+    try {
+      let response = await axios.patch(`http://localhost:3000/following/${userDetails._id}`,{}, { withCredentials: true });
+      setIsFollow(response.data.isFollow);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
 

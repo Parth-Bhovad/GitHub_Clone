@@ -21,7 +21,7 @@ const createRepository = async (req, res) => {
         const newRepository = new Repository({ ...req.body });
         const result = await newRepository.save();
 
-        const existingUser = await User.findByIdAndUpdate({_id:owner}, {repositories:newRepository._id});
+        const existingUser = await User.findByIdAndUpdate({ _id: owner }, { repositories: newRepository._id });
         console.log(existingUser);
 
         res.status(201).json({
@@ -153,26 +153,33 @@ const deleteRepositoryById = async (req, res) => {
 
 const getAllFilePaths = async (req, res) => {
     console.log("getting paths...");
-    
-    let reponame = req.params.reponame;
-console.log(reponame);
 
-    const filePaths = await Repository.findOne({reponame});
-    console.log(filePaths);
-    res.json(filePaths.content);
+    try {
+        let reponame = req.params.reponame;
+        console.log(reponame);
+
+        const filePaths = await Repository.findOne({ reponame });
+        console.log(filePaths);
+        res.json(filePaths.content);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 const getSupabsePublicUrl = async (req, res) => {
     console.log("getting public url...");
-    console.log(req.params);
-    const path = req.params[0];
-    const { data } = supabase.storage.from(".git").getPublicUrl(path);
-    if (!data || !data.publicUrl) {
-        throw new Error("Failed to generate public URL.");
-    }
+    try {
+        const path = req.params[0];
+        const { data } = supabase.storage.from(".git").getPublicUrl(path);
+        if (!data || !data.publicUrl) {
+            throw new Error("Failed to generate public URL.");
+        }
 
-    console.log("🌍 Public URL:", data.publicUrl);
-    res.json(data.publicUrl);
+        console.log("🌍 Public URL:", data.publicUrl);
+        res.json(data.publicUrl);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 module.exports = {

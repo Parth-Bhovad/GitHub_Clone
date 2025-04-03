@@ -1,14 +1,9 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const { MongoClient, ReturnDocument } = require("mongodb")
+const { MongoClient} = require("mongodb")
 const dotenv = require("dotenv");
-var ObjectId = require("mongodb").ObjectId;
-const fs = require("fs").promises;
-const path = require("path");
-const supabase = require("../config/supabaseConfig");
-const { mkdir } = require("fs");
+let ObjectId = require("mongodb").ObjectId;
 
-dotenv.config();
 const uri = process.env.MONGODB_URI;
 
 let client;
@@ -198,88 +193,100 @@ const updateUserProfile = async (req, res) => {
 };
 
 const deleteUserProfile = async (req, res) => {
-    await connectClient();
-    const db = client.db("GitHubClone");
-    const userCollection = db.collection("users");
-    const currentID = req.params.id;
-
-    const deletedUser = await userCollection.deleteOne({
-        _id: new ObjectId(currentID),
-    });
-
-    if (deletedUser.deleteCount == 0) {
-        res.status(404).json("User not found")
+    try {
+        await connectClient();
+        const db = client.db("GitHubClone");
+        const userCollection = db.collection("users");
+        const currentID = req.params.id;
+    
+        const deletedUser = await userCollection.deleteOne({
+            _id: new ObjectId(currentID),
+        });
+    
+        if (deletedUser.deleteCount == 0) {
+            res.status(404).json("User not found")
+        }
+    
+        res.json("user deleted");
+    } catch (error) {
+        console.log(error);
     }
-
-    res.json("user deleted");
 };
 
 const getCurrentUsername = async (req, res) => {
-    const userId = req.params.id;
+    try {
+        const userId = req.params.id;
+        
+        const userObjectId = new ObjectId(userId);
+        
+        await connectClient();
+        const db = client.db("GitHubClone");
+        const userCollection = db.collection("users");
     
-    const userObjectId = new ObjectId(userId);
+        const user = await userCollection.findOne({
+            _id: userObjectId,
+        });
     
-    await connectClient();
-    const db = client.db("GitHubClone");
-    const userCollection = db.collection("users");
-
-    const user = await userCollection.findOne({
-        _id: userObjectId,
-    });
-
-    res.json(user.username);
+        res.json(user.username);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 const following = async (req, res) => {
     // userId = the user which is going to follow targetUser, targetUserId = the user which will getting followed 
 
-    //userId
-    let token = req.cookies.token;
+    try {
+        //userId
+        let token = req.cookies.token;
+        
+        let decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        let userId = decoded.id;
+        let userObjectId = new ObjectId(userId)
     
-    let decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    let userId = decoded.id;
-    let userObjectId = new ObjectId(userId)
-
-    //targetUserId
-    const targetUserId = req.params.id;
-    const targetUserObjectId = new ObjectId(targetUserId);
+        //targetUserId
+        const targetUserId = req.params.id;
+        const targetUserObjectId = new ObjectId(targetUserId);
+        
+        if (!userId || !targetUserId) {
+            return res.status(400).json({ message: "Both userId and targetUserId are required." });
+        }
     
-    if (!userId || !targetUserId) {
-        return res.status(400).json({ message: "Both userId and targetUserId are required." });
+        await connectClient();
+        const db = client.db("GitHubClone");
+        const userCollection = db.collection("users");
+    
+        //Updating targetUser
+        let targetUser = await userCollection.findOne({_id:targetUserObjectId});
+        if (!targetUser) {
+            return res.status(404).json({ message: "Target user not found." });
+        }
+        let isFollower = targetUser.followers.some(followersId => followersId.toString() === userObjectId.toString());
+        console.log("isFollower", isFollower);
+        const targetUserUpdateQuery = isFollower ? {$pull:{followers:userObjectId}} : {$addToSet: {followers:userObjectId}};
+        console.log("targetUserUpdateQuery", targetUserUpdateQuery);
+    
+        let updatedTargetUser = await userCollection.findOneAndUpdate({_id:targetUserObjectId}, targetUserUpdateQuery, {returnDocument:"after"});
+    
+        //Updating user
+        const user = await userCollection.findOne({_id:userObjectId});
+        if (!user) {
+            return res.status(404).json({ message: "Target user not found." });
+        }
+        let isFollowing = user.following.some(followingId => followingId.toString() === targetUserObjectId.toString());
+        console.log("isFollowing", isFollowing);
+        let userUpdateQuery = isFollowing ? {$pull:{following:targetUserObjectId}} : {$addToSet:{following:targetUserObjectId}};
+        console.log("userUpdateQuery", userUpdateQuery);
+        const updatedUser = await userCollection.findOneAndUpdate({_id:userObjectId}, userUpdateQuery, {returnDocument:"after"});
+    
+        res.json({
+            message: isFollower ? "Unfollowed successfully" : "Followed successfully",
+            isFollow: isFollower ? false : true,
+            updatedTargetUser
+        });
+    } catch (error) {
+        console.log(error);
     }
-
-    await connectClient();
-    const db = client.db("GitHubClone");
-    const userCollection = db.collection("users");
-
-    //Updating targetUser
-    let targetUser = await userCollection.findOne({_id:targetUserObjectId});
-    if (!targetUser) {
-        return res.status(404).json({ message: "Target user not found." });
-    }
-    let isFollower = targetUser.followers.some(followersId => followersId.toString() === userObjectId.toString());
-    console.log("isFollower", isFollower);
-    const targetUserUpdateQuery = isFollower ? {$pull:{followers:userObjectId}} : {$addToSet: {followers:userObjectId}};
-    console.log("targetUserUpdateQuery", targetUserUpdateQuery);
-
-    let updatedTargetUser = await userCollection.findOneAndUpdate({_id:targetUserObjectId}, targetUserUpdateQuery, {returnDocument:"after"});
-
-    //Updating user
-    const user = await userCollection.findOne({_id:userObjectId});
-    if (!user) {
-        return res.status(404).json({ message: "Target user not found." });
-    }
-    let isFollowing = user.following.some(followingId => followingId.toString() === targetUserObjectId.toString());
-    console.log("isFollowing", isFollowing);
-    let userUpdateQuery = isFollowing ? {$pull:{following:targetUserObjectId}} : {$addToSet:{following:targetUserObjectId}};
-    console.log("userUpdateQuery", userUpdateQuery);
-    const updatedUser = await userCollection.findOneAndUpdate({_id:userObjectId}, userUpdateQuery, {returnDocument:"after"});
-
-    res.json({
-        message: isFollower ? "Unfollowed successfully" : "Followed successfully",
-        isFollow: isFollower ? false : true,
-        updatedTargetUser
-    });
 }
 
 module.exports = {
