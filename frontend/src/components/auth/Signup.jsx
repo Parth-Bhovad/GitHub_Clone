@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link } from "react-router-dom";
 import { PageHeader } from '@primer/react';
 import { Box, Button } from "@primer/react";
-import "./auth.css"
+import "../../styles/pages/auth.css"
 
 import logo from "../../assets/github-mark-white.svg"
 import { useAuth } from '../../authContext';

@@ -2,7 +2,7 @@ import React from "react";
 import ActionMenu from "../utils/ActionMenu";
 import Label from '../utils/Label';
 import Avatar from '../user/UserAvatar';
-import "./RepoHeading.css";
+import "../../styles/components/RepoHeading.css";
 
 const RepoHeading = ({reponame}) => {
     return (

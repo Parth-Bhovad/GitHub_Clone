@@ -6,18 +6,11 @@ import { Link } from "react-router-dom";
 
 import { PageHeader } from '@primer/react';
 import { Box, Button } from "@primer/react";
-import "./auth.css"
+import "../../styles/pages/auth.css"
 
 import logo from "../../assets/github-mark-white.svg"
 
 const Login = () => {
-
-    // useEffect(() => {
-    //     localStorage.removeItem("token");
-    //     localStorage.removeItem("userId");
-    //     setCurrentUser(null);
-    // });
-
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
