@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const http = require("http");
@@ -68,7 +69,8 @@ function startServer() {
     const app = express();
     const port = process.env.PORT || 3000;
 
-    app.use(bodyParser.json());
+    // app.use(bodyParser.json());
+    app.use(cookieParser());
     app.use(express.json());
 
     const mongoUri = process.env.MONGODB_URI;
