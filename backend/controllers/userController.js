@@ -57,31 +57,26 @@ const signup = async (req, res) => {
             password: hashedPassword,
             email,
             repositories: [],
-            followdUsers: [],
+            followers: [],
+            following: [],
             starRepos: [],
         };
 
         const result = await userCollection.insertOne(newUser);
-
-        const token = jwt.sign({ id: result.insertId },
-            process.env.JWT_SECRET_KEY,
-            { expiresIn: "1h" }
+        
+        const token = jwt.sign({ id: result.insertedId },
+            process.env.JWT_SECRET_KEY
         );
-
-        // Correctly resolve path
-        const configFolderPath = path.resolve(process.cwd(), ".git", "userConfig");
-        //Creating directory to store user id
-        await fs.mkdir(configFolderPath, { recursive: true });
-
-        const configPath = path.join(configFolderPath, "userConfig.json");
-
-        // Save userId to config file (correctly using await)
-        await fs.writeFile(configPath, JSON.stringify({ userId: user._id }));
-
-        res.json({ token, userId: result.insertId });
+        
+        res.cookie("token", token, {
+            httpOnly: true,  // Prevents JavaScript access
+            secure: process.env.NODE_ENV === "production",  // Secure only in production
+            sameSite: "Lax"  // Adjust if using frontend on a different domain
+        });
+        res.json({ token, userId: result.insertedId });
 
     } catch (error) {
-        console.error("Error during signup: ", error.message);
+        console.error("Error during signup: ", error);
         res.status(500).send("Server error");
     }
 };
@@ -101,8 +96,6 @@ const uploadProfileUrl = async (req, res) => {
         { username },
         { $set: { profileUrl: file.path } } // Assuming you want to store file path
     );
-    console.log("uploading...");
-    console.log(file.path);
     res.json({ result });
 }
 
@@ -114,9 +107,7 @@ const getProfileUrl = async (req, res) => {
 
     try {
         const user = await userCollection.find({ username }).next();
-        console.log(user);
         const profileUrl = user.profileUrl;
-        console.log(profileUrl);
         res.json(profileUrl);
     } catch (error) {
         console.error("Error during getting user profileUrl: ", error.message);
@@ -143,10 +134,13 @@ const login = async (req, res) => {
 
         const token = jwt.sign({ id: user._id },
             process.env.JWT_SECRET_KEY,
-            { expiresIn: "1h" }
         );
 
-        res.cookie("token", token);
+        res.cookie("token", token, {
+            httpOnly: true,  // Prevents JavaScript access
+            secure: process.env.NODE_ENV === "production",  // Secure only in production
+            sameSite: "Lax"  // Adjust if using frontend on a different domain
+        });
 
         res.json({ token, userId: user._id });
     } catch (error) {
@@ -222,15 +216,70 @@ const deleteUserProfile = async (req, res) => {
 
 const getCurrentUsername = async (req, res) => {
     const userId = req.params.id;
+    
+    const userObjectId = new ObjectId(userId);
+    
     await connectClient();
     const db = client.db("GitHubClone");
     const userCollection = db.collection("users");
 
     const user = await userCollection.findOne({
-        _id: new ObjectId(userId),
+        _id: userObjectId,
     });
 
     res.json(user.username);
+}
+
+const following = async (req, res) => {
+    // userId = the user which is going to follow targetUser, targetUserId = the user which will getting followed 
+
+    //userId
+    let token = req.cookies.token;
+    
+    let decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    let userId = decoded.id;
+    let userObjectId = new ObjectId(userId)
+
+    //targetUserId
+    const targetUserId = req.params.id;
+    const targetUserObjectId = new ObjectId(targetUserId);
+    
+    if (!userId || !targetUserId) {
+        return res.status(400).json({ message: "Both userId and targetUserId are required." });
+    }
+
+    await connectClient();
+    const db = client.db("GitHubClone");
+    const userCollection = db.collection("users");
+
+    //Updating targetUser
+    let targetUser = await userCollection.findOne({_id:targetUserObjectId});
+    if (!targetUser) {
+        return res.status(404).json({ message: "Target user not found." });
+    }
+    let isFollower = targetUser.followers.some(followersId => followersId.toString() === userObjectId.toString());
+    console.log("isFollower", isFollower);
+    const targetUserUpdateQuery = isFollower ? {$pull:{followers:userObjectId}} : {$addToSet: {followers:userObjectId}};
+    console.log("targetUserUpdateQuery", targetUserUpdateQuery);
+
+    let updatedTargetUser = await userCollection.findOneAndUpdate({_id:targetUserObjectId}, targetUserUpdateQuery, {returnDocument:"after"});
+
+    //Updating user
+    const user = await userCollection.findOne({_id:userObjectId});
+    if (!user) {
+        return res.status(404).json({ message: "Target user not found." });
+    }
+    let isFollowing = user.following.some(followingId => followingId.toString() === targetUserObjectId.toString());
+    console.log("isFollowing", isFollowing);
+    let userUpdateQuery = isFollowing ? {$pull:{following:targetUserObjectId}} : {$addToSet:{following:targetUserObjectId}};
+    console.log("userUpdateQuery", userUpdateQuery);
+    const updatedUser = await userCollection.findOneAndUpdate({_id:userObjectId}, userUpdateQuery, {returnDocument:"after"});
+
+    res.json({
+        message: isFollower ? "Unfollowed successfully" : "Followed successfully",
+        isFollow: isFollower ? false : true,
+        updatedTargetUser
+    });
 }
 
 module.exports = {
@@ -242,5 +291,6 @@ module.exports = {
     getUserProfile,
     updateUserProfile,
     deleteUserProfile,
-    getCurrentUsername
+    getCurrentUsername,
+    following
 };
