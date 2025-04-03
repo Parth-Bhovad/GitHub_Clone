@@ -12,7 +12,7 @@ export default function ShowRepo() {
     const [activeTab, setActiveTab] = useState("Code");
     const [isPush, setIsPush] = useState(true);
 
-    let { reponame } = useParams();
+    let { reponame, username } = useParams();
     return (
         <>
             <Navbar />
@@ -29,7 +29,7 @@ export default function ShowRepo() {
             {/*Render components*/}
             {isPush === true ?
                 <div>
-                    {activeTab === "Code" && <Code reponame={reponame} />}
+                    {activeTab === "Code" && <Code reponame={reponame} username={username} />}
                     {activeTab === "Issue" && <Issue />}
                 </div>
                 :
