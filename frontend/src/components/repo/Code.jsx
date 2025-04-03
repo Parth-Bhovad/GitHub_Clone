@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import "./Code.css"
+import axios from 'axios'
 
 import Hr from "../utils/hr/Hr"
 import ActionMenu from "../utils/ActionMenu"
@@ -7,7 +8,48 @@ import BranchName from '../utils/BranchName';
 import RepoTable from "../utils/RepoTable";
 import Blankslate from "../utils/BlankSlate";
 import RepoHeading from './RepoHeading';
-export default function Code({reponame}) {
+export default function Code({reponame, username}) {
+const [tree, setTree] = useState({});
+    useEffect(() => {
+        const getBucketFilePaths = async () => {
+            try {
+              let response = await axios.get(`http://localhost:3000/repo/allFilesPath/${reponame}`);
+              return response.data;
+            } catch (error) {
+              console.error("Error fetching file paths:", error);
+              return [];
+            }
+          };
+      
+          function buildHierarchy(paths) {
+            let result = {};
+      
+            for (let path of paths) {
+              let cleanPath = path.trim();
+              let parts = cleanPath.split("\\");
+              // parts.splice(0, 2); // Remove unnecessary parts
+              let current = result;
+      
+              for (let part of parts) {
+                if (!current[part]) {
+                  current[part] = {};
+                }
+                current = current[part];
+              }
+            }
+      
+            return result;
+          }
+
+          const getFolderStructure = async () => {
+            let links = await getBucketFilePaths();
+            let result = buildHierarchy(links);
+            setTree(result);
+          };
+      
+          getFolderStructure();
+    }, [])
+
     return (
         <>
             <div className="code-container">
@@ -26,7 +68,7 @@ export default function Code({reponame}) {
                         </span>
                     </div>
                     <div className="d-2">
-                        <RepoTable></RepoTable>
+                        <RepoTable rows={tree} reponame={reponame} username={username}></RepoTable>
                     </div>
 
                     <Blankslate />
