@@ -19,7 +19,9 @@ const CreateRepo = () => {
         const fetchUsernamFromId = async (userId) => {
             try {
                 const response = await axios.get(
-                    `http://localhost:3000/username/${userId}`
+                    `http://localhost:3000/username/${userId}`,
+                    {},
+                    { withCredentials: true }
                 );
                 setUsername(response.data);
             } catch (error) {
@@ -38,7 +40,9 @@ const CreateRepo = () => {
                 visibility: selectedOption,
                 owner: userId,
                 username
-            });
+            },
+            { withCredentials: true }
+        );
 
             navigate("/");
 

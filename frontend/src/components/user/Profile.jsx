@@ -36,9 +36,12 @@ const Profile = () => {
     formData.append("profileUrl", file);
 
     try {
-      let response = await axios.post(`http://localhost:3000/upload/${username}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      let response = await axios.post(`http://localhost:3000/upload/${username}`, formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        },
+        { withCredentials: true }
+      );
       console.log(response.data);
       console.log("File uploaded:", response.data.profileUrl);
     } catch (error) {
@@ -63,7 +66,8 @@ const Profile = () => {
       if (username) {
         try {
           const response = await axios.get(
-            `http://localhost:3000/userProfile/${username}`
+            `http://localhost:3000/userProfile/${username}`,
+            { withCredentials: true }
           );
           setUserDetails(response.data);
         } catch (err) {
@@ -80,7 +84,7 @@ const Profile = () => {
 
       if (username) {
         try {
-          const response = await axios.get(`http://localhost:3000/profileUrl/${username}`);
+          const response = await axios.get(`http://localhost:3000/profileUrl/${username}`, { withCredentials: true });
 
           setProfileUrl(response.data);
         } catch (error) {
@@ -94,8 +98,8 @@ const Profile = () => {
 
   const handleLogout = async () => {
     console.log("logout");
-    const response = await axios.post("http://localhost:3000/logout", {}, {withCredentials:true});    
-    
+    const response = await axios.post("http://localhost:3000/logout", {}, { withCredentials: true });
+
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
     setCurrentUser(null);
