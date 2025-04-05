@@ -19,6 +19,6 @@ userRouter.get("/profileUrl/:username", userController.getProfileUrl);
 userRouter.post("/login", userController.login);
 userRouter.put("/updateProfile/:id", userController.updateUserProfile);
 userRouter.delete("/deleteProfile/:id", userController.deleteUserProfile);
-
+userRouter.post("/logout", userController.logout)
 
 module.exports = userRouter;
