@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from "../../authContext";
 
 import axios from 'axios';
-import { Link } from "react-router-dom";
 
-import { PageHeader } from '@primer/react';
-import { Box, Button } from "@primer/react";
+//Importing Auth Components
+import AuthHeading from './AuthHeading';
+import AuthButton from './AuthButton';
+import AuthInput from './AuthInput';
+import AuthLogoContainer from './AuthLogoContainer';
+import AuthBottomBox from './AuthBottomBox';
+
 import "../../styles/pages/auth.css"
 
-import logo from "../../assets/github-mark-white.svg"
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -42,59 +45,18 @@ const Login = () => {
 
     return (
         <div className="login-wrapper">
-            <div className="login-logo-container">
-                <img className="logo-login" src={logo} alt="Logo" />
-            </div>
+            <AuthLogoContainer />
 
             <div className="login-box-wrapper">
-                <div className="login-heading">
-                    <Box>
-                        <PageHeader>
-                            <PageHeader.TitleArea varient="large">
-                                <PageHeader.Title>Sign In</PageHeader.Title>
-                            </PageHeader.TitleArea>
-                        </PageHeader>
-                    </Box>
-                </div>
+                <AuthHeading title={"Sign In"} />
 
                 <div className="login-box">
-                    <div>
-                        <label className="label">Email address</label>
-                        <input
-                            autoComplete="off"
-                            name="Email"
-                            id="Email"
-                            className="input"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </div>
+                    <AuthInput label={"Email Address"} type={"email"} value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <AuthInput label={"Password"} type={"password"} value={password} onChange={(e) => setPassword(e.target.value)} />
 
-                    <div className="div">
-                        <label className="label">Password</label>
-                        <input
-                            autoComplete="off"
-                            name="Password"
-                            id="Password"
-                            className="input"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
-
-                    <Button
-                        variant="primary"
-                        className="login-btn"
-                        disabled={loading}
-                        onClick={handleLogin}>
-                        {loading ? "loading" : "Login"}
-                    </Button>
+                    <AuthButton disabled={loading} onClick={handleLogin} value={loading ? "loading" : "Login"} />
                 </div>
-                <div className="pass-box">
-                    <p>New to GitHub? <Link to="/signup">Create an account</Link></p>
-                </div>
+                <AuthBottomBox text1={"New to GitHub?"} text2={"Create an account"} link={"signup"} />
             </div>
         </div>
     );

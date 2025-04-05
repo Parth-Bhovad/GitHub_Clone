@@ -15,7 +15,7 @@ const Profile = () => {
   const [isFollow, setIsFollow] = useState();
   const { setCurrentUser } = useAuth();
 
-  const {username} = useParams();
+  const { username } = useParams();
 
   const [file, setFile] = useState(null);
   const [profileUrl, setProfileUrl] = useState(null);
@@ -48,7 +48,7 @@ const Profile = () => {
 
   const handleFollow = async () => {
     try {
-      let response = await axios.patch(`http://localhost:3000/following/${userDetails._id}`,{}, { withCredentials: true });
+      let response = await axios.patch(`http://localhost:3000/following/${userDetails._id}`, {}, { withCredentials: true });
       setIsFollow(response.data.isFollow);
     } catch (error) {
       console.log(error);
@@ -92,6 +92,17 @@ const Profile = () => {
     fetchUserProfileUrl()
   }, [profileUrl])
 
+  const handleLogout = async () => {
+    console.log("logout");
+    const response = await axios.post("http://localhost:3000/logout", {}, {withCredentials:true});    
+    
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    setCurrentUser(null);
+
+    navigate("/auth")
+  }
+
   return (
     <>
       <Navbar />
@@ -128,13 +139,7 @@ const Profile = () => {
       </UnderlineNav>
 
       <button
-        onClick={() => {
-          localStorage.removeItem("token");
-          localStorage.removeItem("userId");
-          setCurrentUser(null);
-
-          window.location.href = "/auth";
-        }}
+        onClick={handleLogout}
         style={{ position: "fixed", bottom: "50px", right: "50px" }}
         id="logout"
       >
@@ -146,15 +151,21 @@ const Profile = () => {
           <div className="profile-image">
             {profileUrl ? <img src={profileUrl} alt="profile" /> : <p>No profileUrl</p>}
           </div>
-            <label htmlFor="profile"></label>
-            <input type="file" id="profile" name="profileUrl" onChange={handleFileChange} />
-            <button onClick={handleUpload}>Upload</button>
+          {String(userId) === String(userDetails?._id) ?
+            <div>
+              <label htmlFor="profile"></label>
+              <input type="file" id="profile" name="profileUrl" onChange={handleFileChange} />
+              <button onClick={handleUpload}>Upload</button>
+            </div>
+            : null}
 
           <div className="name">
             <h1>{userDetails.username}</h1>
           </div>
 
-          <button className="follow-btn" onClick={handleFollow}>{isFollow ? "Unfollow": "Follow"}</button>
+          {String(userId) === String(userDetails?._id)
+            ? <button className="follow-btn">{"Owner"}</button>
+            : <button className="follow-btn" onClick={handleFollow}>{isFollow ? "Unfollow" : "Follow"}</button>}
 
           <div className="follower">
             <p>10 Follower</p>
