@@ -170,7 +170,10 @@ const updateUserProfile = async (req, res) => {
     const currentID = req.params.id;
     const { email, password } = req.body;
     try {
-        let updateFields = { email };
+        let updateFields = {};
+        if (email) {
+            updateFields = { email };
+        }
         if (password) {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
@@ -289,6 +292,17 @@ const following = async (req, res) => {
     }
 }
 
+const logout = async (req, res) => {
+    console.log("logout");
+    
+    res.clearCookie("token", {
+        httpOnly: true,  // Prevents JavaScript access
+        secure: process.env.NODE_ENV === "production",  // Secure only in production
+        sameSite: "Lax"  // Adjust if using frontend on a different domain
+    });
+    res.status(200).json({ success: true });
+}
+
 module.exports = {
     getAllUsers,
     signup,
@@ -299,5 +313,6 @@ module.exports = {
     updateUserProfile,
     deleteUserProfile,
     getCurrentUsername,
-    following
+    following,
+    logout
 };
