@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from "react-router-dom";
-import { PageHeader } from '@primer/react';
-import { Box, Button } from "@primer/react";
 import "../../styles/pages/auth.css"
 
-import logo from "../../assets/github-mark-white.svg"
+//Importing Auth Components
+import AuthHeading from './AuthHeading';
+import AuthButton from './AuthButton';
+import AuthInput from './AuthInput';
+import AuthLogoContainer from './AuthLogoContainer';
+import AuthBottomBox from './AuthBottomBox';
+
 import { useAuth } from '../../authContext';
 const Signup = () => {
 
@@ -43,72 +46,19 @@ const Signup = () => {
 
     return (
         <div className="login-wrapper">
-            <div className="login-logo-container">
-                <img className="logo-login" src={logo} alt="Logo" />
-            </div>
+            <AuthLogoContainer />
 
             <div className="login-box-wrapper">
-                <div className="login-heading">
-                    <Box>
-                        <PageHeader>
-                            <PageHeader.TitleArea varient="large">
-                                <PageHeader.Title>Sign Up</PageHeader.Title>
-                            </PageHeader.TitleArea>
-                        </PageHeader>
-                    </Box>
-                </div>
+                <AuthHeading title={"Sign Up"} />
 
                 <div className="login-box">
-                    <div>
-                        <label className="label">Username</label>
-                        <input
-                            autoComplete="off"
-                            name="Username"
-                            id="Username"
-                            className="input"
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                        />
-                    </div>
+                    <AuthInput label={"Username"} type={"text"} value={username} onChange={(e) => setUsername(e.target.value)} />
+                    <AuthInput label={"Email Address"} type={"email"} value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <AuthInput label={"Password"} type={"password"} value={password} onChange={(e) => setPassword(e.target.value)} />
 
-                    <div>
-                        <label className="label">Email address</label>
-                        <input
-                            autoComplete="off"
-                            name="Email"
-                            id="Email"
-                            className="input"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="div">
-                        <label className="label">Password</label>
-                        <input
-                            autoComplete="off"
-                            name="Password"
-                            id="Password"
-                            className="input"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
-
-                    <Button
-                        variant="primary"
-                        className="login-btn"
-                        disabled={loading}
-                        onClick={handleSignup}>
-                        {loading ? "loading" : "Signup"}
-                    </Button>
+                    <AuthButton disabled={loading} onClick={handleSignup} value={loading ? "loading" : "SignUp"} />
                 </div>
-                <div className="pass-box">
-                    <p>Already have an account? <Link to="/auth">Login</Link></p>
-                </div>
+                <AuthBottomBox text1={"Already have an account?"} text2={"Login"} link={"auth"} />
             </div>
         </div>
     );
