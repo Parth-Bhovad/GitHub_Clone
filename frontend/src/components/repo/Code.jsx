@@ -13,7 +13,10 @@ const [tree, setTree] = useState({});
     useEffect(() => {
         const getBucketFilePaths = async () => {
             try {
-              let response = await axios.get(`http://localhost:3000/repo/allFilesPath/${reponame}`);
+              let response = await axios.get(`http://localhost:3000/repo/allFilesPath/${reponame}`, 
+                {},
+                { withCredentials: true }
+              );
               return response.data;
             } catch (error) {
               console.error("Error fetching file paths:", error);
