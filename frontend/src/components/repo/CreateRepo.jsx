@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import "../../styles/pages/createRepo.css";
+import { useNavigate } from "react-router-dom";
 
 import Navbar from "../layout/Navbar";
 
@@ -11,16 +12,19 @@ const CreateRepo = () => {
     // const [visibility, setVisibility] = useState("");
     const [selectedOption, setSelectedOption] = useState(false);
     const userId = localStorage.getItem("userId");
+
+    const navigate = useNavigate();
+
     useEffect(() => {
         const fetchUsernamFromId = async (userId) => {
             try {
                 const response = await axios.get(
                     `http://localhost:3000/username/${userId}`
                 );
+                setUsername(response.data);
             } catch (error) {
                 console.log(error);
             }
-            setUsername(response.data);
         }
 
         fetchUsernamFromId(userId);
@@ -35,6 +39,9 @@ const CreateRepo = () => {
                 owner: userId,
                 username
             });
+
+            navigate("/");
+
         } catch (error) {
             console.log("error during repo creating", error.message);
         }
