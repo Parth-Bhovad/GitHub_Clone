@@ -21,8 +21,9 @@ const createRepository = async (req, res) => {
         const newRepository = new Repository({ ...req.body });
         const result = await newRepository.save();
 
-        const existingUser = await User.findByIdAndUpdate({ _id: owner }, { repositories: newRepository._id });
-        console.log(existingUser);
+        const existingUser = await User.findById({ _id: owner });
+        existingUser.repositories.push(newRepository._id);
+        await existingUser.save()
 
         res.status(201).json({
             message: "Repository created",
