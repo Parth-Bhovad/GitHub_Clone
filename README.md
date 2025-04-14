@@ -17,18 +17,24 @@ A GitHub-inspired web application built using the MERN stack. The platform repli
    git clone https://github.com/your-username/github-clone.git
 2. Navigate to the project directory:
    ```bash
-   cd github-clone
+   cd github
 3.Install the dependencies:
    ```bash
     npm install
   ````
 4. Create a .env file and add your MongoDB connection string and any other required environment variables.
 
-5. Run the application:
+5. Run the backend:
+   ```bash
+   cd backend
+   node index.js start
+
+6. Run the frontend:
   ```bash
-    npx nodemon app.js
+    cd frontend
+    npm run dev
 ```
-6.Open your browser and go to http://localhost:3000 to use the app.
+7.You will get a link in terminal ctrl+click to open the frontend on browser.
 
 ## Features
 
@@ -39,3 +45,12 @@ Repository Creation: Users can create repositories directly from the frontend.
 Code Upload & Download: Upload multiple files to cloud storage and download them as needed.
 
 MVC Architecture: Structured codebase following the Model-View-Controller pattern for better maintainability.
+
+## Live Demo
+
+### 🚀 Coming soon — live version will be added here.
+
+## Project Status / Ongoing Work
+The project is actively being developed. Here's what's currently in progress:
+
+ UI improvements and responsiveness
