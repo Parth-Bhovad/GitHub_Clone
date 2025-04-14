@@ -8,7 +8,7 @@ export default function RepositoryTable({rows, reponame, username}) {
     return (
         <div className="table">
             <div className="top">
-                <Avatar />username
+                <Avatar />{username}
             </div>
             {Object.keys(rows).map((key) => (
                 <Link to={`/${username}/${reponame}/show`}>
