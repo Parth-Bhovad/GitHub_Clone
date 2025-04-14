@@ -34,6 +34,29 @@ async function pushRepo() {
             .then(() => console.log("MongoDB connected"))
             .catch((error) => console.error("Unable to connect :", error));
 
+
+            let results = await recursion(commitPaths);
+            const relativePaths = results.map((result) => path.relative(commitPaths, result));
+            let i = 0;
+            for (const result of results) {
+                const finalUrl = path.join(startUrl, relativePaths[i]);
+                console.log(finalUrl);
+                const fileContent = await fs.readFile(result);
+                const { data, error } = await supabase
+                    .storage
+                    .from('.git')
+                    .upload(finalUrl, fileContent, { upsert: true });
+    
+                if (error) {
+                    console.error("Upload failed:", error.message);
+                } else {
+                    console.log(`Uploaded: ${result}`);
+                }
+                bucketFilePaths.push(finalUrl);
+                i++;
+            }
+
+
         let commitIds = [];
 
         for (const commitJson of commitsJson) {
