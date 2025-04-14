@@ -38,17 +38,45 @@ A GitHub-inspired web application built using the MERN stack. The platform repli
 
 ## Features
 
-User Authentication & Authorization: Secure login and role-based access to repositories.
+- User Authentication & Authorization: Secure login and role-based access to repositories.
 
-Repository Creation: Users can create repositories directly from the frontend.
+- Repository Creation: Users can create repositories directly from the frontend.
 
-Code Upload & Download: Upload multiple files to cloud storage and download them as needed.
+- Code Upload & Download: Upload multiple files to cloud storage and download them as needed.
 
-MVC Architecture: Structured codebase following the Model-View-Controller pattern for better maintainability.
+- MVC Architecture: Structured codebase following the Model-View-Controller pattern for better maintainability.
 
 ## Live Demo
 
 ### 🚀 Coming soon — live version will be added here.
+
+## CLI Commands
+
+This GitHub clone includes a custom CLI interface to handle file versioning and interaction with the cloud storage. Below are the available commands:
+
+## Add a file to the staging area
+```bash
+node index.js add <filePath>
+```
+
+## Commit the staged files with a message
+```bash
+node index.js commit "<message>"
+```
+## Push committed files to the cloud storage
+```bash
+node index.js push
+```
+
+## Pull all files from the cloud to your local machine
+```bash
+node index.js pull
+```
+
+## Set a remote origin for syncing with a cloud bucket
+```bash
+node index.js remote add origin <link>
+```
 
 ## Project Status / Ongoing Work
 The project is actively being developed. Here's what's currently in progress:
