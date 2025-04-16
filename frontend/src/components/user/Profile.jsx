@@ -36,7 +36,7 @@ const Profile = () => {
     formData.append("profileUrl", file);
 
     try {
-      let response = await axios.post(`http://localhost:3000/upload/${username}`, formData,
+      let response = await axios.post(`https://github-server-4yd9.onrender.com/upload/${username}`, formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
         },
@@ -51,7 +51,7 @@ const Profile = () => {
 
   const handleFollow = async () => {
     try {
-      let response = await axios.patch(`http://localhost:3000/following/${userDetails._id}`, {}, { withCredentials: true });
+      let response = await axios.patch(`https://github-server-4yd9.onrender.com/following/${userDetails._id}`, {}, { withCredentials: true });
       setIsFollow(response.data.isFollow);
     } catch (error) {
       console.log(error);
@@ -66,7 +66,7 @@ const Profile = () => {
       if (username) {
         try {
           const response = await axios.get(
-            `http://localhost:3000/userProfile/${username}`,
+            `https://github-server-4yd9.onrender.com/userProfile/${username}`,
             { withCredentials: true }
           );
           setUserDetails(response.data);
@@ -84,7 +84,7 @@ const Profile = () => {
 
       if (username) {
         try {
-          const response = await axios.get(`http://localhost:3000/profileUrl/${username}`, { withCredentials: true });
+          const response = await axios.get(`https://github-server-4yd9.onrender.com/profileUrl/${username}`, { withCredentials: true });
 
           setProfileUrl(response.data);
         } catch (error) {
@@ -98,7 +98,7 @@ const Profile = () => {
 
   const handleLogout = async () => {
     console.log("logout");
-    const response = await axios.post("http://localhost:3000/logout", {}, { withCredentials: true });
+    const response = await axios.post("https://github-server-4yd9.onrender.com/logout", {}, { withCredentials: true });
 
     localStorage.removeItem("token");
     localStorage.removeItem("userId");

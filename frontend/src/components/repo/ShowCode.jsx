@@ -15,7 +15,7 @@ export default function ShowCode() {
 
             console.log("🔹 Cleaned Path:", cleanedPath);
 
-            const publicUrl = await axios.get(`http://localhost:3000/repo/publicUrl/${cleanedPath}`)
+            const publicUrl = await axios.get(`https://github-server-4yd9.onrender.com/repo/publicUrl/${cleanedPath}`)
 
             // ✅ Fetch file from public URL (no encoding needed)
             const response = await fetch(publicUrl.data);

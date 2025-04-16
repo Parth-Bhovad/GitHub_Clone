@@ -23,7 +23,7 @@ const Signup = () => {
         e.preventDefault();
 
         try {
-            const res = await axios.post("http://localhost:3000/signup", {
+            const res = await axios.post("https://github-server-4yd9.onrender.com/signup", {
                 email: email,
                 password: password,
                 username: username,

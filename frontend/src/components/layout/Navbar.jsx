@@ -12,7 +12,7 @@ const [username, setUsername] = useState("");
         const fetchUsernamFromId = async (userId) => {
             try {
                 const response = await axios.get(
-                    `http://localhost:3000/username/${userId}`,
+                    `https://github-server-4yd9.onrender.com/username/${userId}`,
                     { withCredentials: true}
                   );
                 setUsername(response.data);

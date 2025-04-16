@@ -13,7 +13,7 @@ const [tree, setTree] = useState({});
     useEffect(() => {
         const getBucketFilePaths = async () => {
             try {
-              let response = await axios.get(`http://localhost:3000/repo/allFilesPath/${reponame}`,
+              let response = await axios.get(`https://github-server-4yd9.onrender.com/repo/allFilesPath/${reponame}`,
                 { withCredentials: true }
               );
               return response.data;

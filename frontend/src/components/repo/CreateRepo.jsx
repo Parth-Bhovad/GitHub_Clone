@@ -19,7 +19,7 @@ const CreateRepo = () => {
         const fetchUsernamFromId = async (userId) => {
             try {
                 const response = await axios.get(
-                    `http://localhost:3000/username/${userId}`,
+                    `https://github-server-4yd9.onrender.com/username/${userId}`,
                     {},
                     { withCredentials: true }
                 );
@@ -34,7 +34,7 @@ const CreateRepo = () => {
 
     const handleUpload = async () => {
         try {
-            const response = await axios.post("http://localhost:3000/repo/create", {
+            const response = await axios.post("https://github-server-4yd9.onrender.com/repo/create", {
                 reponame,
                 description,
                 visibility: selectedOption,

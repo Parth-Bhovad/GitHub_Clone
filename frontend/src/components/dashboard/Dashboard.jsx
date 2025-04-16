@@ -15,7 +15,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchRepositories = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/repo/user/${userId}`, {
+                const response = await fetch(`https://github-server-4yd9.onrender.com/repo/user/${userId}`, {
                     method: "GET",
                     credentials: "include",
                   });
@@ -29,7 +29,7 @@ const Dashboard = () => {
 
         const fetchSuggestedRepositories = async () => {
             try {
-                const response = await fetch("http://localhost:3000/repo/all", {
+                const response = await fetch("https://github-server-4yd9.onrender.com/repo/all", {
                     method: "GET",
                     credentials: "include",
                   });
