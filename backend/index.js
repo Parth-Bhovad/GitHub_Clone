@@ -79,7 +79,7 @@ function startServer() {
         .catch((error) => console.error("Unable to connect :", error));
 
         app.use(cors({
-            origin: "http://localhost:5173",
+            origin: process.env.NODE_ENV === "production" ? "https://github-clone-36vw.onrender.com" : "http://localhost:3000",
             credentials: true,
         }));
 
@@ -89,7 +89,7 @@ function startServer() {
     const httpServer = http.createServer(app);
     const io = new Server(httpServer, {
         cors: {
-            origin: "*",
+            origin: process.env.NODE_ENV === "production" ? "https://github-clone-36vw.onrender.com" : "http://localhost:3000",
             methods: ["GET", "POST"],
         },
     })

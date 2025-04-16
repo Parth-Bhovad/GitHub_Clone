@@ -66,7 +66,7 @@ const signup = async (req, res) => {
         res.cookie("token", token, {
             httpOnly: true,  // Prevents JavaScript access
             secure: process.env.NODE_ENV === "production",  // Secure only in production
-            sameSite: "Lax"  // Adjust if using frontend on a different domain
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "Lax"
         });
         res.json({ token, userId: result.insertedId });
 
@@ -134,7 +134,7 @@ const login = async (req, res) => {
         res.cookie("token", token, {
             httpOnly: true,  // Prevents JavaScript access
             secure: process.env.NODE_ENV === "production",  // Secure only in production
-            sameSite: "Lax"  // Adjust if using frontend on a different domain
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "Lax"
         });
 
         res.json({ token, userId: user._id });
