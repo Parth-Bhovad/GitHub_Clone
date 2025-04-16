@@ -48,7 +48,7 @@ A GitHub-inspired web application built using the MERN stack. The platform repli
 
 ## Live Demo
 
-### 🚀 Coming soon — live version will be added here.
+### Click here -> [GitHub Clone](https://github-clone-36vw.onrender.com)
 
 ## CLI Commands
 
