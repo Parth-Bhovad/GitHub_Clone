@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from "../../authContext";
 
-import axios from 'axios';
+//importing axios instance
+import api from '../../api/axios';
 
 //Importing Auth Components
 import AuthHeading from './AuthHeading';
@@ -23,10 +24,10 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const res = await axios.post("https://github-server-4yd9.onrender.com/login", {
+            const res = await api.post("/login", {
                 email: email,
                 password: password,
-            }, { withCredentials: true });
+            });
 
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("userId", res.data.userId);

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import "../../styles/components/code.css"
-import axios from 'axios'
+//importing axios instance
+import api from '../../api/axios';
 
 import Hr from "../utils/Hr"
 import ActionMenu from "../utils/ActionMenu"
@@ -13,8 +14,7 @@ const [tree, setTree] = useState({});
     useEffect(() => {
         const getBucketFilePaths = async () => {
             try {
-              let response = await axios.get(`https://github-server-4yd9.onrender.com/repo/allFilesPath/${reponame}`,
-                { withCredentials: true }
+              let response = await api.get(`/repo/allFilesPath/${reponame}`,
               );
               return response.data;
             } catch (error) {

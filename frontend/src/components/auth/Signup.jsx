@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+
+//importing axios instance
+import api from '../../api/axios';
+
 import "../../styles/pages/auth.css"
 
 //Importing Auth Components
@@ -23,7 +26,7 @@ const Signup = () => {
         e.preventDefault();
 
         try {
-            const res = await axios.post("https://github-server-4yd9.onrender.com/signup", {
+            const res = await api.post("/signup", {
                 email: email,
                 password: password,
                 username: username,

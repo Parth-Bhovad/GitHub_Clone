@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../../styles/layouts/navbar.css";
-import axios from "axios";
+//importing axios instance
+import api from '../../api/axios';
 
 const Navbar = () => {
 const [username, setUsername] = useState("");
@@ -11,9 +12,8 @@ const [username, setUsername] = useState("");
     useEffect(() => {
         const fetchUsernamFromId = async (userId) => {
             try {
-                const response = await axios.get(
-                    `https://github-server-4yd9.onrender.com/username/${userId}`,
-                    { withCredentials: true}
+                const response = await api.get(
+                    `/username/${userId}`,
                   );
                 setUsername(response.data);
             } catch (error) {
@@ -37,7 +37,7 @@ const [username, setUsername] = useState("");
                     <p>Create a Repository</p>
                 </Link>
 
-                <Link to={`/Profile/${username}`} style={{textDecoration:"none"}}>
+                <Link to={`/profile/${username}`} style={{textDecoration:"none"}}>
                     <p>Profile</p>
                 </Link>
             </div>

@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import "../../styles/pages/dashboard.css";
 import Navbar from "../layout/Navbar";
 import { Link } from "react-router-dom";
+
+//importing axios instance
+import api from '../../api/axios';
+
 const Dashboard = () => {
 
     const [repositories, setRepositories] = useState([]);
@@ -15,13 +19,9 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchRepositories = async () => {
             try {
-                const response = await fetch(`https://github-server-4yd9.onrender.com/repo/user/${userId}`, {
-                    method: "GET",
-                    credentials: "include",
-                  });
+                const response = await api.get(`/repo/user/${userId}`);
 
-                const data = await response.json();
-                setRepositories(data.repositories);
+                setRepositories(response.data.repositories);
             } catch (error) {
                 console.error("Error while fetching repositories", error);
             }
@@ -29,14 +29,9 @@ const Dashboard = () => {
 
         const fetchSuggestedRepositories = async () => {
             try {
-                const response = await fetch("https://github-server-4yd9.onrender.com/repo/all", {
-                    method: "GET",
-                    credentials: "include",
-                  });
-
-                const data = await response.json();
-                setSuggestedRepositories(data);
-                console.log(data);
+                const response = await api.get("/repo/all");
+                setSuggestedRepositories(response.data);
+                console.log(response.data);
                 console.log(suggestedRepositories);
             } catch (error) {
                 console.error("Error while fetching repositories", error);

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Splitter, SplitterPanel } from 'primereact/splitter';
 import TreeView from "../utils/TreeView";
 import "../../styles/components/showCode.css";
-import axios from 'axios';
+//importing axios instance
+import api from '../../api/axios';
 
 export default function ShowCode() {
     const [fileContent, setFileContent] = useState("Select a file to view its content.");
@@ -15,7 +16,7 @@ export default function ShowCode() {
 
             console.log("🔹 Cleaned Path:", cleanedPath);
 
-            const publicUrl = await axios.get(`https://github-server-4yd9.onrender.com/repo/publicUrl/${cleanedPath}`)
+            const publicUrl = await api.get(`/repo/publicUrl/${cleanedPath}`)
 
             // ✅ Fetch file from public URL (no encoding needed)
             const response = await fetch(publicUrl.data);

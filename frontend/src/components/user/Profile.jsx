@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+//importing axios instance
+import api from '../../api/axios';
 import "../../styles/pages/profile.css";
 import Navbar from "../layout/Navbar";
 import { UnderlineNav } from "@primer/react";
@@ -36,11 +37,10 @@ const Profile = () => {
     formData.append("profileUrl", file);
 
     try {
-      let response = await axios.post(`https://github-server-4yd9.onrender.com/upload/${username}`, formData,
+      let response = await api.post(`/upload/${username}`, formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
         },
-        { withCredentials: true }
       );
       console.log(response.data);
       console.log("File uploaded:", response.data.profileUrl);
@@ -51,7 +51,7 @@ const Profile = () => {
 
   const handleFollow = async () => {
     try {
-      let response = await axios.patch(`https://github-server-4yd9.onrender.com/following/${userDetails._id}`, {}, { withCredentials: true });
+      let response = await api.patch(`/following/${userDetails._id}`);
       setIsFollow(response.data.isFollow);
     } catch (error) {
       console.log(error);
@@ -65,9 +65,8 @@ const Profile = () => {
 
       if (username) {
         try {
-          const response = await axios.get(
-            `https://github-server-4yd9.onrender.com/userProfile/${username}`,
-            { withCredentials: true }
+          const response = await api.get(
+            `/userProfile/${username}`,
           );
           setUserDetails(response.data);
         } catch (err) {
@@ -84,7 +83,7 @@ const Profile = () => {
 
       if (username) {
         try {
-          const response = await axios.get(`https://github-server-4yd9.onrender.com/profileUrl/${username}`, { withCredentials: true });
+          const response = await api.get(`/profileUrl/${username}`);
 
           setProfileUrl(response.data);
         } catch (error) {
@@ -98,7 +97,7 @@ const Profile = () => {
 
   const handleLogout = async () => {
     console.log("logout");
-    const response = await axios.post("https://github-server-4yd9.onrender.com/logout", {}, { withCredentials: true });
+    const response = await api.post("https://github-server-4yd9.onrender.com/logout");
 
     localStorage.removeItem("token");
     localStorage.removeItem("userId");

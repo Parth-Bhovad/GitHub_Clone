@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { TreeView } from "@primer/react";
-import axios from "axios";
+//importing axios instance
+import api from '../../api/axios';
 import { useParams } from "react-router-dom";
 import { FileIcon, FileDirectoryIcon } from "@primer/octicons-react"; // GitHub icons
 
@@ -11,7 +12,7 @@ export default function FolderTreeView({ onFileSelect }) { // ✅ Accept onFileS
   useEffect(() => {
     const getBucketFilePaths = async () => {
       try {
-        let response = await axios.get(`https://github-server-4yd9.onrender.com/repo/allFilesPath/${reponame}`);
+        let response = await api.get(`/repo/allFilesPath/${reponame}`);
         return response.data;
       } catch (error) {
         console.error("Error fetching file paths:", error);
