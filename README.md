@@ -54,6 +54,8 @@ A GitHub-inspired web application built using the MERN stack. The platform repli
 
 This GitHub clone includes a custom CLI interface to handle file versioning and interaction with the cloud storage. Below are the available commands:
 
+### Note: Make sure you are inside the backend directory before running any of these commands. To navigate to the backend directory, please refer to the 5th step of the Installation Instructions. Apologies for the inconvenience — we're working on streamlining this process soon!
+
 ## Add a file to the staging area
 ```bash
 node index.js add <filePath>
