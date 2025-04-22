@@ -7,6 +7,7 @@ const { isLoggedIn, isOwner } = require("../middleware/authorizeMiddleware");
 const repoRouter = express.Router();
 repoRouter.get("/repo/allFilesPath/:reponame", repoController.getAllFilePaths);
 repoRouter.get("/repo/publicUrl/*", repoController.getSupabsePublicUrl)
+repoRouter.get("/repo/getFileExt", repoController.getFileExtension);
 repoRouter.post("/repo/create", isLoggedIn, repoController.createRepository);
 repoRouter.get("/repo/all", isLoggedIn, repoController.getAllRepositories);
 repoRouter.get("/repo/:id", isLoggedIn, repoController.fetchRepositoryById);

@@ -4,6 +4,7 @@ const Issue = require("../models/issueModel");
 const User = require("../models/userModel");
 const RepoFilePaths = require("../models/repoFilePathsModel");
 const supabase = require("../config/supabaseConfig");
+const path = require("path");
 
 
 const createRepository = async (req, res) => {
@@ -183,6 +184,14 @@ const getSupabsePublicUrl = async (req, res) => {
     }
 }
 
+const getFileExtension = async (req, res) => {
+    const filePath = req.query.filePath;
+    console.log("File path:", filePath);
+    const extension = path.extname(filePath).replace('.', ''); // Remove the dot from the extension
+    console.log("File extension:", extension);
+    res.json({ extension });
+}
+
 module.exports = {
     createRepository,
     getAllRepositories,
@@ -193,5 +202,6 @@ module.exports = {
     toggleVisibiltyById,
     deleteRepositoryById,
     getAllFilePaths,
-    getSupabsePublicUrl
+    getSupabsePublicUrl,
+    getFileExtension
 };
