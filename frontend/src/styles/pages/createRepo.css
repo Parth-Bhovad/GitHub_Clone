@@ -76,9 +76,18 @@
     color: white;
 }
 
+button{
+    background-color: var(--green-btn);
+    outline: none;
+    border: none;
+    font-weight: 500;
+    padding: 0.5rem;
+    border-radius: 8px;
+}
+
 @media (max-width:1000px) {
     .container{
-        width: 100vw;
+        width: 95vw;
         margin: 1rem;
     }
 }
