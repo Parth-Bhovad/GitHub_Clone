@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../../styles/layouts/navbar.css";
 //importing axios instance
-import api from '../../api/axios';
+import api from '../../axiosInstance/axios';
 
 const Navbar = () => {
 const [username, setUsername] = useState("");
