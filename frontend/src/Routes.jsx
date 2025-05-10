@@ -1,20 +1,20 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate, useRoutes } from 'react-router-dom';
 
 //Pages List
-import Dashboard from "./components/dashboard/Dashboard";
-import Profile from "./components/user/Profile";
-import Login from "./components/auth/Login";
-import Signup from "./components/auth/Signup";
-import CreateRepo from "./components/repo/CreateRepo";
-import ShowRepo from "./components/repo/ShowRepo";
-import ShowCode from "./components/repo/ShowCode"
+import Dashboard from "./features/dashboard/views/DashboardPage";
+import Profile from "./features/user/views/ProfilePage";
+import Login from "./features/user/views/auth/LoginPage";
+import Signup from "./features/user/views/auth/SignupPage";
+import CreateRepo from "./features/repository/views/CreateRepoPage";
+import RepositoryPage from "./features/repository/views/RepositoryPage";
+// import ShowCode from "./components/repo/ShowCode"
 
 //Auth Context
-import { useAuth } from "./authContext";
+import { useAuthContext } from "./features/user/context/authContext";
 
 const ProjectRoutes = () => {
-    const { currentUser, setCurrentUser } = useAuth();
+    const { currentUser, setCurrentUser } = useAuthContext();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -56,13 +56,13 @@ const ProjectRoutes = () => {
             element: <CreateRepo />
         },
         {
-            path: "/:username/:reponame",
-            element: <ShowRepo />
+            path: "/:username/:reponame/*",
+            element: <RepositoryPage />
         },
-        {
-            path: "/:username/:reponame/show",
-            element: <ShowCode />
-        }
+        // {
+        //     path: "/:username/:reponame/show",
+        //     element: <ShowCode />
+        // }
     ]);
 
     return element;
