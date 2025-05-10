@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
 dotenv.config();
 function isLoggedIn(req, res, next) {
+    console.log("isLoggedIn");
+    
     const token = req.cookies.token;
 
     try {
@@ -17,18 +19,17 @@ function isLoggedIn(req, res, next) {
 
 
 function isOwner(req, res, next) {
+    console.log("isOwner");
+
     let { id, username } = req.params;
     if (id) {
         if ( req.user._id.toString() !== id ) {
+            console.log("You can't access another user's data. ID");
+            
             return res.status(401).json({ message: "You can't access another user's data." });
         }
     }
 
-    if (username) {
-        if ( req.user.username !== username ) {
-            return res.status(401).json({ message: "You can't access another user's data." });
-        }
-    }
     next();
 }
 
