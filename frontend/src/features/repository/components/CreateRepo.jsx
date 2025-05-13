@@ -4,10 +4,13 @@ import "../styles/createRepo.css";
 //importing custom hooks
 import useCreateRepo from "../hooks/useCreateRepo";
 
+//importing components
+import UserAvatar from "../../../components/common/UserAvatar";
+
 
 const CreateRepo = () => {
 
-    const { reponame, setRepoName, description, setDescription, visibility, setVisibility, handleUpload } = useCreateRepo();
+    const { reponame, setRepoName, description, setDescription, visibility, setVisibility, handleUpload, username, profileUrl } = useCreateRepo();
 
     return (
         <>
@@ -24,8 +27,8 @@ const CreateRepo = () => {
                         <div className="owner-container">
                             <p>Owner*</p>
                             <div className="owner">
-                                <img src="https://www.github.com/images/modules/logos_page/GitHub-Mark.png" alt="" />
-                                <p>Username</p>
+                                <UserAvatar src={profileUrl}/>
+                                <p>{username}</p>
                             </div>
                         </div>
 
