@@ -78,7 +78,6 @@ const fetchRepositoryByName = async (req, res) => {
 
 const fetchRepositoriesForCurrentUser = async (req, res) => {
     const userId = req.params.userID;
-    console.log(userId);
     try {
         const repositories = await Repository.find({ owner: userId });
         if (!repositories) {
@@ -154,14 +153,9 @@ const deleteRepositoryById = async (req, res) => {
 };
 
 const getAllFilePaths = async (req, res) => {
-    console.log("getting paths...");
-
     try {
         let reponame = req.params.reponame;
-        console.log(reponame);
-
         const filePaths = await Repository.findOne({ reponame });
-        console.log(filePaths);
         res.json(filePaths.content);
     } catch (error) {
         console.log(error);
@@ -169,7 +163,6 @@ const getAllFilePaths = async (req, res) => {
 }
 
 const getSupabsePublicUrl = async (req, res) => {
-    console.log("getting public url...");
     try {
         const path = req.params[0];
         const { data } = supabase.storage.from(".git").getPublicUrl(path);
@@ -177,7 +170,6 @@ const getSupabsePublicUrl = async (req, res) => {
             throw new Error("Failed to generate public URL.");
         }
 
-        console.log("🌍 Public URL:", data.publicUrl);
         res.json(data.publicUrl);
     } catch (error) {
         console.log(error);
@@ -186,9 +178,7 @@ const getSupabsePublicUrl = async (req, res) => {
 
 const getFileExtension = async (req, res) => {
     const filePath = req.query.filePath;
-    console.log("File path:", filePath);
     const extension = path.extname(filePath).replace('.', ''); // Remove the dot from the extension
-    console.log("File extension:", extension);
     res.json({ extension });
 }
 

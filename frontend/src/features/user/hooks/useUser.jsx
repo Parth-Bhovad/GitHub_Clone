@@ -1,18 +1,12 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-//import authContext
-import { useAuthContext } from "../context/authContext";
 
 // import APIs
-import { uploadProfilePic, follow, fetchUserDetails, fetchUserProfileUrl } from "../api/userAPI";
+import { uploadProfilePic, follow, fetchUserDetails, fetchUserProfileUrl, isFollowing } from "../api/userAPI";
 
 function useUser(username) {
 
-    const navigate = useNavigate();
     const [userDetails, setUserDetails] = useState({ username: "username" });
     const [isFollow, setIsFollow] = useState();
-    const { setCurrentUser } = useAuthContext();
 
     const [file, setFile] = useState(null);
     const [profileUrl, setProfileUrl] = useState(null);
@@ -24,8 +18,6 @@ function useUser(username) {
     const userId = localStorage.getItem("userId");
 
     const handleUpload = async () => {
-        console.log(username);
-        
         if (!file) {
             setMessage("Please select a file.");
             return;
@@ -56,6 +48,8 @@ function useUser(username) {
         if (username) {
             try {
                 const user = await fetchUserDetails(username)
+                console.log(user);
+                
                 setUserDetails(user);
             } catch (err) {
                 console.error("Cannot fetch user details: ", err);
@@ -63,14 +57,27 @@ function useUser(username) {
         }
     };
 
+    const handleIsFollowing = async () => {
+        try {
+            let response = await isFollowing(userDetails._id);
+            
+            setIsFollow(response);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
-        handleFetchUserDetails();
+       handleFetchUserDetails();
     }, []);
 
     useEffect(() => {
-        const handleFetchUserProfileUrl = async () => {
-            // const userId = localStorage.getItem("userId");
+        if (userId != userDetails._id) {
+            handleIsFollowing();
+        }
+    }, [userDetails]);
 
+    const handleFetchUserProfileUrl = async () => {
             if (username) {
                 try {
                     const url = await fetchUserProfileUrl(username)
@@ -82,11 +89,12 @@ function useUser(username) {
             }
         }
 
+    useEffect(() => {
         handleFetchUserProfileUrl()
     }, [profileUrl])
 
     return (
-        {profileUrl, userId, userDetails, handleFileChange, handleUpload, handleFollow, isFollow}
+        {profileUrl, userId, userDetails, handleFileChange, handleUpload, handleFollow, isFollow, handleIsFollowing}
     );
 }
 

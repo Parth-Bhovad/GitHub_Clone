@@ -11,6 +11,7 @@ const {isLoggedIn, isOwner} = require("../middleware/authorizeMiddleware");
 
 userRouter.get("/allUsers", isLoggedIn, userController.getAllUsers);
 userRouter.patch("/following/:id", isLoggedIn, userController.following);
+userRouter.get("/is-following/:id", isLoggedIn, userController.isFollowing);
 userRouter.get("/username/:id", isLoggedIn, userController.getCurrentUsername);
 userRouter.get("/userProfile/:username", isLoggedIn, userController.getUserProfile);
 userRouter.post("/signup", userController.signup);

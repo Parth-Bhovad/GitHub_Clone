@@ -265,9 +265,7 @@ const following = async (req, res) => {
             return res.status(404).json({ message: "Target user not found." });
         }
         let isFollower = targetUser.followers.some(followersId => followersId.toString() === userObjectId.toString());
-        console.log("isFollower", isFollower);
         const targetUserUpdateQuery = isFollower ? {$pull:{followers:userObjectId}} : {$addToSet: {followers:userObjectId}};
-        console.log("targetUserUpdateQuery", targetUserUpdateQuery);
     
         let updatedTargetUser = await userCollection.findOneAndUpdate({_id:targetUserObjectId}, targetUserUpdateQuery, {returnDocument:"after"});
     
@@ -277,9 +275,7 @@ const following = async (req, res) => {
             return res.status(404).json({ message: "Target user not found." });
         }
         let isFollowing = user.following.some(followingId => followingId.toString() === targetUserObjectId.toString());
-        console.log("isFollowing", isFollowing);
         let userUpdateQuery = isFollowing ? {$pull:{following:targetUserObjectId}} : {$addToSet:{following:targetUserObjectId}};
-        console.log("userUpdateQuery", userUpdateQuery);
         const updatedUser = await userCollection.findOneAndUpdate({_id:userObjectId}, userUpdateQuery, {returnDocument:"after"});
     
         res.json({
@@ -292,9 +288,43 @@ const following = async (req, res) => {
     }
 }
 
-const logout = async (req, res) => {
-    console.log("logout");
+const isFollowing = async (req, res) => {
+    try {
+        // userId = the user which is following targetUser, targetUserId = the user which will getting followed 
+        
+        //userId
+        let token = req.cookies.token;
     
+        let decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        let userId = decoded.id;
+        let userObjectId = new ObjectId(userId);
+    
+        //targetUserId
+        const targetUserId = req.params.id;
+        console.log(targetUserId);
+        
+        const targetUserObjectId = new ObjectId(targetUserId);
+    
+        if (!userId || !targetUserId) {
+                return res.status(400).json({ message: "Both userId and targetUserId are required." });
+            }
+    
+        //finding user with user id is following to targetUser or not
+        await connectClient();
+        const db = client.db("GitHubClone");
+        const userCollection = db.collection("users");
+    
+        const user = await userCollection.findOne({_id:userObjectId});
+    
+        let isFollowing = user.following?.some(followingId => followingId.toString() === targetUserObjectId.toString());
+    
+        res.json({isFollowing});
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const logout = async (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,  // Prevents JavaScript access
         secure: process.env.NODE_ENV === "production",  // Secure only in production
@@ -314,5 +344,6 @@ module.exports = {
     deleteUserProfile,
     getCurrentUsername,
     following,
+    isFollowing,
     logout
 };

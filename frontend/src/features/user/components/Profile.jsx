@@ -18,7 +18,6 @@ function Profile() {
     
     const { profileUrl, userId, userDetails, handleFileChange, handleUpload, handleFollow, isFollow } = useUser(username);
     const { handleLogout } = useAuth();
-    console.log(userDetails);
 
     return (
         <>
