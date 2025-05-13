@@ -17,7 +17,7 @@ A GitHub-inspired web application built using the MERN stack. The platform repli
    git clone https://github.com/your-username/github-clone.git
 2. Navigate to the project directory:
    ```bash
-   cd github
+   cd GitHub_Clone
 3.Install the dependencies:
    ```bash
     npm install
