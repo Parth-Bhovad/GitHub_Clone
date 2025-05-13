@@ -15,6 +15,11 @@ export const follow = async (userID) => {
     return response.data.isFollow;
 }
 
+export const isFollowing = async (userID) => {
+    let response = await api.get(`/is-following/${userID}`);
+    return response.data;
+}
+
 export const fetchUserDetails = async (username) => {
     const response = await api.get(
         `/userProfile/${username}`,
@@ -26,4 +31,15 @@ export const fetchUserDetails = async (username) => {
 export const fetchUserProfileUrl = async (username) => {
     const response = await api.get(`/profileUrl/${username}`);
     return response.data;
+}
+
+export const fetchUsernameFromId = async (userId) => {
+    try {
+        const response = await api.get(
+            `/username/${userId}`,
+        );
+        return response.data;
+    } catch (error) {
+        console.log(error);
+    }
 }
