@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 //importing APIs
 import { createRepo } from "../api/createRepoAPI";
+import { fetchUsernameFromId, fetchUserProfileUrl } from "../../user/api/userAPI"
 
 function useCreateRepo() {
 
@@ -11,23 +12,37 @@ function useCreateRepo() {
     const [username, setUsername] = useState("");
     // const [visibility, setVisibility] = useState("");
     const [visibility, setVisibility] = useState(false);
+    const [profileUrl, setProfileUrl] = useState(null);
     const userId = localStorage.getItem("userId");
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchUsernameFromId = async (userId) => {
+        const handleFetchUsernameFromId = async (userId) => {
             try {
-                const response = await api.get(
-                    `/username/${userId}`,
-                );
-                setUsername(response.data);
+                const fetchedUsername = await fetchUsernameFromId(userId)
+                setUsername(fetchedUsername);
             } catch (error) {
                 console.log(error);
             }
         }
 
-        fetchUsernameFromId(userId);
+        handleFetchUsernameFromId(userId);
+        const handleFetchUserProfileUrl = async (username) => {
+            // const userId = localStorage.getItem("userId");
+
+            if (username) {
+                try {
+                    const url = await fetchUserProfileUrl(username)
+
+                    setProfileUrl(url);
+                } catch (error) {
+                    console.error("Cannot fetch user profileUrl: ", error);
+                }
+            }
+        }
+
+        handleFetchUserProfileUrl(username)
     }, [username]);
 
     const handleUpload = async () => {
@@ -42,7 +57,7 @@ function useCreateRepo() {
     }
 
 
-    return ({ reponame, setRepoName, description, setDescription, visibility, setVisibility, handleUpload });
+    return ({ reponame, setRepoName, description, setDescription, visibility, setVisibility, handleUpload, username, profileUrl });
 }
 
 export default useCreateRepo;
