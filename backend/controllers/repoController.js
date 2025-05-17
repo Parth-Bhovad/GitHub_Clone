@@ -66,9 +66,7 @@ const fetchRepositoryByName = async (req, res) => {
     const repoName = req.params.name;
 
     try {
-        const repository = await Repository.findOne({ reponame: repoName })
-            .populate("owner")
-            .populate("issues")
+        const repository = await Repository.findOne({ reponame: repoName });
         res.json(repository)
     } catch (error) {
         console.error("Error in fetching repo", error.message);

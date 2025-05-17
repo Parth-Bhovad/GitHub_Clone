@@ -29,8 +29,8 @@ function useRepo() {
     const [extension, setExtension] = useState("");
     const [expandedNodes, setExpandedNodes] = useState(new Set());
 
-    if (reponame) {
-        useEffect(() => {
+    useEffect(() => {
+        if (reponame) {
             console.log("getFolderStructure");
 
             const getFolderStructure = async () => {
@@ -43,8 +43,8 @@ function useRepo() {
                 setTree(result);
             };
             getFolderStructure();
-        }, []);
-    }
+        }
+    }, []);
 
     useEffect(() => {
         // Highlight the code after the component mounts or updates
