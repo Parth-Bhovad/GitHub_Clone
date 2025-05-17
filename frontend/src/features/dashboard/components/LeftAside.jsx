@@ -9,7 +9,7 @@ function LeftAside() {
         <section className="leftAside">
             <h3>Suggested Repositories</h3>
             <div className="repoList">
-                {suggestedRepositories.map((repo) => {
+                {suggestedRepositories.filter(repo => repo.visibility === true).map((repo) => {
                     return (
                         <Link to={`/${repo.username}/${repo.reponame}`}>
                             <div key={repo._id}>
