@@ -24,3 +24,8 @@ export const fetchPublicUrl = async (path) => {
     const response = await api.get(`/repo/publicUrl/${path}`);
     return response.data;
 }
+
+export const fetchRepositoryByName = async (reponame) => {
+    const response = await api.get(`/repo/name/${reponame}`);
+    return response.data;
+}
