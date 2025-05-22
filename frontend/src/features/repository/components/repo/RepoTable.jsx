@@ -3,7 +3,14 @@ import "../../styles/repoTable.css"
 // import "../../assets/colors.css";
 import { Link } from "react-router-dom";
 
-export default function RepositoryTable({rows, reponame, username}) {
+//importing context
+import { useRepoContext } from '../../context/useRepoContext';
+
+export default function RepositoryTable({reponame, username}) {
+
+    const {folderStructure} = useRepoContext();
+    const {tree} = folderStructure;
+    const rows = tree;
     return (
         <div className="table">
             <div className="top">
