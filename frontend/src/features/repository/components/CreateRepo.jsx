@@ -3,14 +3,23 @@ import "../styles/createRepo.css";
 
 //importing custom hooks
 import useCreateRepo from "../hooks/useCreateRepo";
+import useRepoFormState from "../hooks/useRepoFormState";
+import useFetchProfileUrl from "../../user/hooks/useFetchProfileUrl";
+import useFetchUsernameFromId from "../../user/hooks/useFetchUsernameFromId";
 
+//importing context
+import { useAuthContext } from "../../user/context/authContext";
 //importing components
 import UserAvatar from "../../../components/common/UserAvatar";
 
 
 const CreateRepo = () => {
+    const { currentUser } = useAuthContext();
 
-    const { reponame, setRepoName, description, setDescription, visibility, setVisibility, handleUpload, username, profileUrl } = useCreateRepo();
+    const { handleUpload } = useCreateRepo();
+    const { reponame, setRepoName, description, setDescription, visibility, setVisibility } = useRepoFormState();
+    const { username } = useFetchUsernameFromId(currentUser)
+    const { profileUrl } = useFetchProfileUrl(username);
 
     return (
         <>
@@ -27,7 +36,7 @@ const CreateRepo = () => {
                         <div className="owner-container">
                             <p>Owner*</p>
                             <div className="owner">
-                                <UserAvatar src={profileUrl}/>
+                                <UserAvatar src={profileUrl} />
                                 <p>{username}</p>
                             </div>
                         </div>
@@ -64,7 +73,7 @@ const CreateRepo = () => {
                     <hr />
                 </div>
 
-                <button onClick={handleUpload}>Create repository</button>
+                <button onClick={() => { handleUpload(reponame, description, visibility, currentUser, username) }}>Create repository</button>
             </div>
         </>
     );
