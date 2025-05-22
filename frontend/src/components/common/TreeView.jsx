@@ -8,7 +8,9 @@ export default function FolderTreeView() { // ✅ Accept onFileSelect as a prop
   const { reponame } = useParams();
   console.log(reponame);
 
-  const { renderTree, tree } = useRepoContext();
+  const { repo, folderStructure } = useRepoContext();
+  const { renderTree } = repo;
+  const { tree } = folderStructure
   console.log(tree);
 
   return <TreeView>{Object.keys(tree).length > 0 ? renderTree(tree) : <p>Loading...</p>}</TreeView>;
