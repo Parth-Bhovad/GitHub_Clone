@@ -1,13 +1,10 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 
 import { TreeView } from "@primer/react";
 
-// Importing utility functions
-import { buildHierarchy } from "../utils/buildHierarchy";
 
 // importing APIs
-import { fetchBucketFilePaths, fetchFileExtension, fetchPublicUrl } from "../api/repoAPI";
+import { fetchFileExtension, fetchPublicUrl } from "../api/repoAPI";
 
 //Prism.js imports
 import Prism from 'prismjs';
@@ -22,29 +19,9 @@ import 'prismjs/plugins/line-numbers/prism-line-numbers.js';
 import { FileIcon, FileDirectoryIcon } from "@primer/octicons-react"; // GitHub icons
 
 function useRepo() {
-    const { reponame } = useParams();
-
-    const [tree, setTree] = useState({});
     const [fileContent, setFileContent] = useState("Select a file to view its content.");
     const [extension, setExtension] = useState("");
     const [expandedNodes, setExpandedNodes] = useState(new Set());
-
-    useEffect(() => {
-        if (reponame) {
-            console.log("getFolderStructure");
-
-            const getFolderStructure = async () => {
-                let links = await fetchBucketFilePaths(reponame);
-                console.log(links);
-
-                let result = buildHierarchy(links);
-                console.log(result);
-
-                setTree(result);
-            };
-            getFolderStructure();
-        }
-    }, []);
 
     useEffect(() => {
         // Highlight the code after the component mounts or updates
@@ -128,7 +105,7 @@ function useRepo() {
         });
     };
 
-    return ({ tree, fetchFileContent, extension, fileContent, renderTree });
+    return ({ fetchFileContent, extension, fileContent, renderTree });
 }
 
 export default useRepo;
