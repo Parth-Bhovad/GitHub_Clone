@@ -9,14 +9,20 @@ import HeatMapProfile from "./HeatMap";
 import "../styles/profile.css";
 
 //importing custom hooks
-import useUser from "../hooks/useUser";
+import useHandleFollow from "../hooks/useHandleFollow";
 import useAuth from "../hooks/useAuth";
+import useFetchUserDetails from "../hooks/useFetchUserDetails";
+import useProfileUpload from "../hooks/useProfileUpload"
 
+//importing auth context
+import { useAuthContext } from "../context/authContext";
 
 function Profile() {
+    const {currentUser } = useAuthContext()
     const {username} = useParams();
-    
-    const { profileUrl, userId, userDetails, handleFileChange, handleUpload, handleFollow, isFollow } = useUser(username);
+    const {userDetails} = useFetchUserDetails(username);
+    const {handleUpload, setFile} = useProfileUpload(username);
+    const { handleFollow, isFollow } = useHandleFollow(currentUser, userDetails._id);
     const { handleLogout } = useAuth();
 
     return (
@@ -64,21 +70,21 @@ function Profile() {
             <div className="profile-page-wrapper">
                 <div className="user-profile-section">
                     <div className="profile-image">
-                        {profileUrl ? <img src={profileUrl} alt="profile" /> : <p>No profileUrl</p>}
+                        {userDetails.profileUrl ? <img src={userDetails.profileUrl} alt="profile" /> : <p>No profileUrl</p>}
                     </div>
-                    {String(userId) === String(userDetails?._id) ?
+                    {String(currentUser) === String(userDetails?._id) ?
                         <div>
                             <label htmlFor="profile"></label>
-                            <input type="file" id="profile" name="profileUrl" onChange={handleFileChange} />
+                            <input type="file" id="profile" name="profileUrl" onChange={(e) => setFile(e.target.files[0])} />
                             <button onClick={handleUpload}>Upload</button>
                         </div>
                         : null}
 
                     <div className="name">
-                        <h1>{userDetails.username}</h1>
+                        <h1>{userDetails?.username}</h1>
                     </div>
 
-                    {String(userId) === String(userDetails?._id)
+                    {String(currentUser) === String(userDetails?._id)
                         ? null
                         : <button className="follow-btn" onClick={handleFollow}>{isFollow ? "Unfollow" : "Follow"}</button>}
 

@@ -7,7 +7,8 @@ import { useRepoContext } from '../../context/useRepoContext';
 
 export default function ShowCode() {
 
-    const { fetchFileContent, extension, fileContent } = useRepoContext();
+    const { repo } = useRepoContext();
+    const { extension, fileContent} = repo;
 
     return (
         <Splitter style={{ height: '300px' }}>

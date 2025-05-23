@@ -9,16 +9,10 @@ import RepoTable from "./RepoTable";
 import Blankslate from "../../../../components/common/BlankSlate";
 import RepoHeading from './RepoHeading';
 
-//importing custom hooks
-import { useRepoContext } from '../../context/useRepoContext';
 
 export default function Code() {
 
   const { reponame, username } = useParams();
-
-  const { tree } = useRepoContext();
-  console.log(tree);
-
 
   return (
     <>
@@ -38,7 +32,7 @@ export default function Code() {
             </span>
           </div>
           <div className="d-2">
-            <RepoTable rows={tree} reponame={reponame} username={username}></RepoTable>
+            <RepoTable reponame={reponame} username={username}></RepoTable>
           </div>
 
           <Blankslate />
