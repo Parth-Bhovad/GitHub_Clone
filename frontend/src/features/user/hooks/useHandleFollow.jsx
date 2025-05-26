@@ -20,7 +20,7 @@ function useHandleFollow(currentUser, userDetailsId) {
         try {
             let response = await isFollowing(userDetailsId);
 
-            setIsFollow(response);
+            setIsFollow(response.isFollowing);
         } catch (error) {
             console.log(error);
         }
