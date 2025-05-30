@@ -3,6 +3,8 @@ const Repository = require("../models/repoModel");
 const Issue = require("../models/issueModel");
 const User = require("../models/userModel");
 const RepoFilePaths = require("../models/repoFilePathsModel");
+const Commit = require("../models/commitModel");
+const Repo = require("../models/repoModel");
 const supabase = require("../config/supabaseConfig");
 const path = require("path");
 
@@ -180,6 +182,94 @@ const getFileExtension = async (req, res) => {
     res.json({ extension });
 }
 
+const push = async (req, res) => {
+    try {
+        const { files, username, reponame, commits } = req.body;
+
+        let bucketFilePaths = [];
+
+        for (const file of files) {
+            const finalUrl = path.join(username, reponame, file.path);
+            const { data, error } = await supabase
+                .storage
+                .from('.git')
+                .upload(finalUrl, file.content, { upsert: true });
+            if (error) {
+                console.error("Upload failed:", error.message);
+                return res.status(500).json({ error: "Failed to upload files on supabase" });
+            }
+            bucketFilePaths.push(finalUrl);
+        }
+
+        let commitIds = [];
+
+        for (const commit of commits) {
+            const newCommit = new Commit({
+                msg: commit.msg,
+                date: commit.date,
+                filePaths: commit.filePaths,
+                _id: commit._id,
+                reponame: reponame
+            });
+            await newCommit.save();
+            commitIds.push(commit._id);
+        }
+
+        const exitingRepo = await Repo.findOne({ reponame });
+        if (exitingRepo) {
+            const newBucketFilePaths = exitingRepo.content.concat(bucketFilePaths);
+            const newCommitIds = exitingRepo.commitIds.concat(commitIds);
+            let updatedRepo = await Repo.findOneAndUpdate({ reponame }, { $set: { content: newBucketFilePaths, commitIds: newCommitIds } }, { returnDocument: "after" });
+        }
+
+        res.status(200).json({ message: "Files uploaded successfully" });
+
+    } catch (error) {
+        console.error("Error during push operation:", error);
+        res.status(500).json({ error: "Failed to push changes" });
+    }
+}
+
+const pull = async (req, res) => {
+    const { reponame } = req.params;
+    try {
+        const existingRepo = await Repository.findOne({ reponame });
+        if (!existingRepo) {
+            return res.status(404).json({ message: "Repository not found" });
+        }
+
+        const filePaths = existingRepo.content;
+        const files = [];
+
+        for (const filePath of filePaths) {
+            const { data, error } = await supabase
+                .storage
+                .from('.git')
+                .download(filePath);
+
+            if (error) {
+                console.error(`Failed to download ${filePath}:`, error);
+                continue;
+            }
+
+            const textContent = await data.text();
+
+            files.push({
+                path: filePath,
+                content: textContent
+            });
+        }
+        // Send all files as JSON response
+        res.status(200).json({
+            reponame,
+            files
+        });
+    } catch (err) {
+        console.error("Pull failed:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 module.exports = {
     createRepository,
     getAllRepositories,
@@ -191,5 +281,7 @@ module.exports = {
     deleteRepositoryById,
     getAllFilePaths,
     getSupabsePublicUrl,
-    getFileExtension
+    getFileExtension,
+    push,
+    pull
 };
