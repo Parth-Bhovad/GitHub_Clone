@@ -1,5 +1,5 @@
-const jwt = require("jsonwebtoken");
-const express = require("express");
+import jwt from "jsonwebtoken";
+
 function getUserIdFromToken(req) {
     try {
         const token = req.headers.authorization?.split(" ")[1]; // Get token from "Bearer <token>"
@@ -13,4 +13,4 @@ function getUserIdFromToken(req) {
     }
 }
 
-module.exports = getUserIdFromToken;
+export default getUserIdFromToken;

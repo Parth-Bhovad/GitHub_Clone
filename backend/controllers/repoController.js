@@ -1,15 +1,14 @@
-const mongoose = require("mongoose");
-const Repository = require("../models/repoModel");
-const Issue = require("../models/issueModel");
-const User = require("../models/userModel");
-const RepoFilePaths = require("../models/repoFilePathsModel");
-const Commit = require("../models/commitModel");
-const Repo = require("../models/repoModel");
-const supabase = require("../config/supabaseConfig");
-const path = require("path");
+import mongoose from "mongoose";
+import Repository from "../models/repoModel.js";
+import Issue from "../models/issueModel.js";
+import User from "../models/userModel.js";
+import RepoFilePaths from "../models/repoFilePathsModel.js";
+import Commit from "../models/commitModel.js";
+import Repo from "../models/repoModel.js";
+import supabase from "../config/supabaseConfig.js";
+import path from "path";
 
-
-const createRepository = async (req, res) => {
+export const createRepository = async (req, res) => {
     const { owner, reponame, issues, content, description, visibility } = req.body;
 
     try {
@@ -39,7 +38,7 @@ const createRepository = async (req, res) => {
     }
 };
 
-const getAllRepositories = async (req, res) => {
+export const getAllRepositories = async (req, res) => {
     try {
         const repositories = await Repository.find({});
         res.json(repositories);
@@ -49,7 +48,7 @@ const getAllRepositories = async (req, res) => {
     }
 };
 
-const fetchRepositoryById = async (req, res) => {
+export const fetchRepositoryById = async (req, res) => {
     const repoID = req.params.id;
 
     try {
@@ -64,7 +63,7 @@ const fetchRepositoryById = async (req, res) => {
 
 };
 
-const fetchRepositoryByName = async (req, res) => {
+export const fetchRepositoryByName = async (req, res) => {
     const repoName = req.params.name;
 
     try {
@@ -76,7 +75,7 @@ const fetchRepositoryByName = async (req, res) => {
     }
 };
 
-const fetchRepositoriesForCurrentUser = async (req, res) => {
+export const fetchRepositoriesForCurrentUser = async (req, res) => {
     const userId = req.params.userID;
     try {
         const repositories = await Repository.find({ owner: userId });
@@ -91,7 +90,7 @@ const fetchRepositoriesForCurrentUser = async (req, res) => {
     }
 };
 
-const updateRepositoryById = async (req, res) => {
+export const updateRepositoryById = async (req, res) => {
     const { id } = req.params;
     const { content, description } = req.body;
 
@@ -104,7 +103,7 @@ const updateRepositoryById = async (req, res) => {
 
         repository.content.push(content);
         repository.description = description;
-        const updatedRepository = repository.save();
+        const updatedRepository = await repository.save();
 
         res.json({
             message: "repository updated",
@@ -116,7 +115,7 @@ const updateRepositoryById = async (req, res) => {
     }
 };
 
-const toggleVisibiltyById = async (req, res) => {
+export const toggleVisibiltyById = async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -127,7 +126,7 @@ const toggleVisibiltyById = async (req, res) => {
         }
 
         repository.visibility = !repository.visibility
-        const updatedRepository = repository.save();
+        const updatedRepository = await repository.save();
 
         res.json({
             message: "repository visibility toggled",
@@ -139,11 +138,11 @@ const toggleVisibiltyById = async (req, res) => {
     }
 };
 
-const deleteRepositoryById = async (req, res) => {
+export const deleteRepositoryById = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const deleteRepository = await Repository.findByIdAndDelete(id);
+        await Repository.findByIdAndDelete(id);
 
         res.json({ message: "repository deleted", });
     } catch (error) {
@@ -152,7 +151,7 @@ const deleteRepositoryById = async (req, res) => {
     }
 };
 
-const getAllFilePaths = async (req, res) => {
+export const getAllFilePaths = async (req, res) => {
     try {
         let reponame = req.params.reponame;
         const filePaths = await Repository.findOne({ reponame });
@@ -162,10 +161,10 @@ const getAllFilePaths = async (req, res) => {
     }
 }
 
-const getSupabsePublicUrl = async (req, res) => {
+export const getSupabsePublicUrl = async (req, res) => {
     try {
-        const path = req.params[0];
-        const { data } = supabase.storage.from(".git").getPublicUrl(path);
+        const pathParam = req.params[0];
+        const { data } = supabase.storage.from(".git").getPublicUrl(pathParam);
         if (!data || !data.publicUrl) {
             throw new Error("Failed to generate public URL.");
         }
@@ -176,13 +175,13 @@ const getSupabsePublicUrl = async (req, res) => {
     }
 }
 
-const getFileExtension = async (req, res) => {
+export const getFileExtension = async (req, res) => {
     const filePath = req.query.filePath;
     const extension = path.extname(filePath).replace('.', ''); // Remove the dot from the extension
     res.json({ extension });
 }
 
-const push = async (req, res) => {
+export const push = async (req, res) => {
     try {
         const { files, username, reponame, commits } = req.body;
 
@@ -219,7 +218,7 @@ const push = async (req, res) => {
         if (exitingRepo) {
             const newBucketFilePaths = exitingRepo.content.concat(bucketFilePaths);
             const newCommitIds = exitingRepo.commitIds.concat(commitIds);
-            let updatedRepo = await Repo.findOneAndUpdate({ reponame }, { $set: { content: newBucketFilePaths, commitIds: newCommitIds } }, { returnDocument: "after" });
+            await Repo.findOneAndUpdate({ reponame }, { $set: { content: newBucketFilePaths, commitIds: newCommitIds } }, { returnDocument: "after" });
         }
 
         res.status(200).json({ message: "Files uploaded successfully" });
@@ -230,7 +229,7 @@ const push = async (req, res) => {
     }
 }
 
-const pull = async (req, res) => {
+export const pull = async (req, res) => {
     const { reponame } = req.params;
     try {
         const existingRepo = await Repository.findOne({ reponame });
@@ -268,20 +267,4 @@ const pull = async (req, res) => {
         console.error("Pull failed:", err);
         res.status(500).json({ message: "Server error" });
     }
-};
-
-module.exports = {
-    createRepository,
-    getAllRepositories,
-    fetchRepositoryById,
-    fetchRepositoryByName,
-    fetchRepositoriesForCurrentUser,
-    updateRepositoryById,
-    toggleVisibiltyById,
-    deleteRepositoryById,
-    getAllFilePaths,
-    getSupabsePublicUrl,
-    getFileExtension,
-    push,
-    pull
 };

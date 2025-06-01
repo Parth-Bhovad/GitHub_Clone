@@ -1,15 +1,16 @@
-const mongoose = require("mongoose");
-const {Schema} = mongoose;
+import mongoose from "mongoose";
+const { Schema } = mongoose;
+
 const repoFilePathsSchema = new Schema({
-    reponame:{
-        type:String
+    reponame: {
+        type: String
     },
-    bucketFilePaths:{
-        type:[String],
-        default:[]
+    bucketFilePaths: {
+        type: [String],
+        default: []
     }
 });
 
 const repoFilePath = mongoose.model("repoFilePath", repoFilePathsSchema);
 
-module.exports = repoFilePath;
+export default repoFilePath;

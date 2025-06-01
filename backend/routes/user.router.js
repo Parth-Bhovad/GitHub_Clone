@@ -1,13 +1,11 @@
-const express = require("express");
-const multer = require("multer");
-const {storage} = require("../config/cloudinaryConfig");
-const upload = multer({storage})
-const userController = require("../controllers/userController");
+import express from "express";
+import multer from "multer";
+import { storage } from "../config/cloudinaryConfig.js";
+import * as userController from "../controllers/userController.js";
+import { isLoggedIn, isOwner } from "../middleware/authorizeMiddleware.js";
 
+const upload = multer({ storage });
 const userRouter = express.Router();
-
-//importing middlewares
-const {isLoggedIn, isOwner} = require("../middleware/authorizeMiddleware");
 
 userRouter.get("/allUsers", isLoggedIn, userController.getAllUsers);
 userRouter.patch("/following/:id", isLoggedIn, userController.following);
@@ -20,6 +18,6 @@ userRouter.get("/profileUrl/:username", isLoggedIn, userController.getProfileUrl
 userRouter.post("/login", userController.login);
 userRouter.put("/updateProfile/:id", isLoggedIn, isOwner, userController.updateUserProfile);
 userRouter.delete("/deleteProfile/:id", isLoggedIn, isOwner, userController.deleteUserProfile);
-userRouter.post("/logout", isLoggedIn ,userController.logout);
+userRouter.post("/logout", isLoggedIn, userController.logout);
 
-module.exports = userRouter;
+export default userRouter;

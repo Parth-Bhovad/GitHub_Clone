@@ -1,12 +1,12 @@
-const express = require("express");
-const repoController = require("../controllers/repoController");
+import express from "express";
+import * as repoController from "../controllers/repoController.js";
 
-//importing middlewares
-const { isLoggedIn, isOwner } = require("../middleware/authorizeMiddleware");
+// importing middlewares
+import { isLoggedIn, isOwner } from "../middleware/authorizeMiddleware.js";
 
 const repoRouter = express.Router();
 repoRouter.get("/repo/allFilesPath/:reponame", repoController.getAllFilePaths);
-repoRouter.get("/repo/publicUrl/*", repoController.getSupabsePublicUrl)
+repoRouter.get("/repo/publicUrl/*", repoController.getSupabsePublicUrl);
 repoRouter.get("/repo/getFileExt", repoController.getFileExtension);
 repoRouter.post("/repo/create", isLoggedIn, repoController.createRepository);
 repoRouter.get("/repo/all", isLoggedIn, repoController.getAllRepositories);
@@ -19,4 +19,4 @@ repoRouter.delete("/repo/delete/:id", isLoggedIn, isOwner, repoController.delete
 repoRouter.patch("/repo/toggle/:id", isLoggedIn, isOwner, repoController.toggleVisibiltyById);
 repoRouter.post("/repo/push", repoController.push);
 
-module.exports = repoRouter;
+export default repoRouter;
