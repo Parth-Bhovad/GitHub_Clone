@@ -4,10 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 import http from "http";
-import { Server } from "socket.io";
 import mainRouter from "./routes/main.router.js";
-import yargs from "yargs";
-import { hideBin } from "yargs/helpers";
 
 dotenv.config();
 
