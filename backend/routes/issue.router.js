@@ -1,5 +1,5 @@
-const express = require("express");
-const issueController = require("../controllers/issueController");
+import express from "express";
+import * as issueController from "../controllers/issueController.js";
 
 const issueRouter = express.Router();
 
@@ -9,4 +9,4 @@ issueRouter.delete("/issue/delete/:id", issueController.deleteIssueById);
 issueRouter.get("/issue/all", issueController.getAllIssue);
 issueRouter.get("/issue/:id", issueController.getIssueById);
 
-module.exports = issueRouter;
+export default issueRouter;

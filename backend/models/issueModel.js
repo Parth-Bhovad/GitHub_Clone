@@ -1,5 +1,6 @@
-const mongoose = require("mongoose");
-const { default: Repository } = require("./repoModel");
+import mongoose from "mongoose";
+import Repository from "./repoModel.js";
+
 const { Schema } = mongoose;
 
 const IssueSchema = new Schema({
@@ -25,4 +26,4 @@ const IssueSchema = new Schema({
 
 const Issue = mongoose.model("Issue", IssueSchema);
 
-module.exports = Issue;
+export default Issue;

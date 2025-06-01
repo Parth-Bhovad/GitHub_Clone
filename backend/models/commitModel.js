@@ -1,28 +1,28 @@
-const mongoose = require("mongoose");
-const {Schema} = mongoose;
+import mongoose from "mongoose";
+const { Schema } = mongoose;
 
 const CommitSchema = new Schema({
-    _id:{
-        type:String,
+    _id: {
+        type: String,
     },
-    reponame:{
-        type:String
+    reponame: {
+        type: String
     },
-    msg:{
-        type:String,
-        required:true
+    msg: {
+        type: String,
+        required: true
     },
-    date:{
-        type:Date,
-        required:true
+    date: {
+        type: Date,
+        required: true
     },
     filePaths: {
-        type: [String],    // ✅ Proper way to define array of strings
+        type: [String],
         required: true,
-        default: []        // ✅ Default value at the array level
+        default: []
     }
-}, { _id: false }); // Prevents Mongoose from auto-generating _id
+}, { _id: false });
 
 const Commit = mongoose.model("Commit", CommitSchema);
 
-module.exports = Commit
+export default Commit;

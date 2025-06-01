@@ -1,8 +1,6 @@
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const { MongoClient} = require("mongodb")
-const dotenv = require("dotenv");
-let ObjectId = require("mongodb").ObjectId;
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import { MongoClient, ObjectId } from "mongodb";
 
 const uri = process.env.MONGODB_URI;
 
@@ -18,7 +16,7 @@ async function connectClient() {
     await client.connect();
 }
 
-const getAllUsers = async (req, res) => {
+export const getAllUsers = async (req, res) => {
     try {
         await connectClient();
         const db = client.db("GitHubClone");
@@ -32,7 +30,7 @@ const getAllUsers = async (req, res) => {
     }
 };
 
-const signup = async (req, res) => {
+export const signup = async (req, res) => {
     const { username, password, email } = req.body;
     try {
         await connectClient();
@@ -58,14 +56,14 @@ const signup = async (req, res) => {
         };
 
         const result = await userCollection.insertOne(newUser);
-        
+
         const token = jwt.sign({ id: result.insertedId },
             process.env.JWT_SECRET_KEY
         );
-        
+
         res.cookie("token", token, {
-            httpOnly: true,  // Prevents JavaScript access
-            secure: process.env.NODE_ENV === "production",  // Secure only in production
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "Lax"
         });
         res.json({ token, userId: result.insertedId });
@@ -76,7 +74,7 @@ const signup = async (req, res) => {
     }
 };
 
-const uploadProfileUrl = async (req, res) => {
+export const uploadProfileUrl = async (req, res) => {
     await connectClient();
     const db = client.db("GitHubClone");
     const userCollection = db.collection("users");
@@ -89,12 +87,12 @@ const uploadProfileUrl = async (req, res) => {
 
     const result = await userCollection.updateOne(
         { username },
-        { $set: { profileUrl: file.path } } // Assuming you want to store file path
+        { $set: { profileUrl: file.path } }
     );
     res.json({ result });
-}
+};
 
-const getProfileUrl = async (req, res) => {
+export const getProfileUrl = async (req, res) => {
     await connectClient();
     const db = client.db("GitHubClone");
     const userCollection = db.collection("users");
@@ -108,9 +106,9 @@ const getProfileUrl = async (req, res) => {
         console.error("Error during getting user profileUrl: ", error.message);
         res.status(500).send("Server error");
     }
-}
+};
 
-const login = async (req, res) => {
+export const login = async (req, res) => {
     const { email, password } = req.body;
     try {
         await connectClient();
@@ -132,8 +130,8 @@ const login = async (req, res) => {
         );
 
         res.cookie("token", token, {
-            httpOnly: true,  // Prevents JavaScript access
-            secure: process.env.NODE_ENV === "production",  // Secure only in production
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "Lax"
         });
 
@@ -143,8 +141,8 @@ const login = async (req, res) => {
     }
 };
 
-const getUserProfile = async (req, res) => {
-    const username = req.params.username
+export const getUserProfile = async (req, res) => {
+    const username = req.params.username;
     try {
         await connectClient();
         const db = client.db("GitHubClone");
@@ -163,7 +161,7 @@ const getUserProfile = async (req, res) => {
     }
 };
 
-const updateUserProfile = async (req, res) => {
+export const updateUserProfile = async (req, res) => {
     await connectClient();
     const db = client.db("GitHubClone");
     const userCollection = db.collection("users");
@@ -195,89 +193,83 @@ const updateUserProfile = async (req, res) => {
     }
 };
 
-const deleteUserProfile = async (req, res) => {
+export const deleteUserProfile = async (req, res) => {
     try {
         await connectClient();
         const db = client.db("GitHubClone");
         const userCollection = db.collection("users");
         const currentID = req.params.id;
-    
+
         const deletedUser = await userCollection.deleteOne({
             _id: new ObjectId(currentID),
         });
-    
+
         if (deletedUser.deleteCount == 0) {
-            res.status(404).json("User not found")
+            res.status(404).json("User not found");
         }
-    
+
         res.json("user deleted");
     } catch (error) {
         console.log(error);
     }
 };
 
-const getCurrentUsername = async (req, res) => {
+export const getCurrentUsername = async (req, res) => {
     try {
         const userId = req.params.id;
-        
+
         const userObjectId = new ObjectId(userId);
-        
+
         await connectClient();
         const db = client.db("GitHubClone");
         const userCollection = db.collection("users");
-    
+
         const user = await userCollection.findOne({
             _id: userObjectId,
         });
-    
+
         res.json(user.username);
     } catch (error) {
         console.log(error);
     }
-}
+};
 
-const following = async (req, res) => {
-    // userId = the user which is going to follow targetUser, targetUserId = the user which will getting followed 
-
+export const following = async (req, res) => {
     try {
-        //userId
         let token = req.cookies.token;
-        
+
         let decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
         let userId = decoded.id;
-        let userObjectId = new ObjectId(userId)
-    
-        //targetUserId
+        let userObjectId = new ObjectId(userId);
+
         const targetUserId = req.params.id;
         const targetUserObjectId = new ObjectId(targetUserId);
-        
+
         if (!userId || !targetUserId) {
             return res.status(400).json({ message: "Both userId and targetUserId are required." });
         }
-    
+
         await connectClient();
         const db = client.db("GitHubClone");
         const userCollection = db.collection("users");
-    
-        //Updating targetUser
-        let targetUser = await userCollection.findOne({_id:targetUserObjectId});
+
+        let targetUser = await userCollection.findOne({ _id: targetUserObjectId });
         if (!targetUser) {
             return res.status(404).json({ message: "Target user not found." });
         }
         let isFollower = targetUser.followers.some(followersId => followersId.toString() === userObjectId.toString());
-        const targetUserUpdateQuery = isFollower ? {$pull:{followers:userObjectId}} : {$addToSet: {followers:userObjectId}};
-    
-        let updatedTargetUser = await userCollection.findOneAndUpdate({_id:targetUserObjectId}, targetUserUpdateQuery, {returnDocument:"after"});
-    
-        //Updating user
-        const user = await userCollection.findOne({_id:userObjectId});
+        const targetUserUpdateQuery = isFollower ? { $pull: { followers: userObjectId } } : { $addToSet: { followers: userObjectId } };
+
+        let updatedTargetUser = await userCollection.findOneAndUpdate({ _id: targetUserObjectId }, targetUserUpdateQuery, { returnDocument: "after" });
+
+        const user = await userCollection.findOne({ _id: userObjectId });
         if (!user) {
             return res.status(404).json({ message: "Target user not found." });
         }
         let isFollowing = user.following.some(followingId => followingId.toString() === targetUserObjectId.toString());
-        let userUpdateQuery = isFollowing ? {$pull:{following:targetUserObjectId}} : {$addToSet:{following:targetUserObjectId}};
-        const updatedUser = await userCollection.findOneAndUpdate({_id:userObjectId}, userUpdateQuery, {returnDocument:"after"});
-    
+        let userUpdateQuery = isFollowing ? { $pull: { following: targetUserObjectId } } : { $addToSet: { following: targetUserObjectId } };
+        const updatedUser = await userCollection.findOneAndUpdate({ _id: userObjectId }, userUpdateQuery, { returnDocument: "after" });
+
         res.json({
             message: isFollower ? "Unfollowed successfully" : "Followed successfully",
             isFollow: isFollower ? false : true,
@@ -286,64 +278,42 @@ const following = async (req, res) => {
     } catch (error) {
         console.log(error);
     }
-}
+};
 
-const isFollowing = async (req, res) => {
+export const isFollowing = async (req, res) => {
     try {
-        // userId = the user which is following targetUser, targetUserId = the user which will getting followed 
-        
-        //userId
         let token = req.cookies.token;
-    
+
         let decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
         let userId = decoded.id;
         let userObjectId = new ObjectId(userId);
-    
-        //targetUserId
+
         const targetUserId = req.params.id;
-        console.log(targetUserId);
-        
         const targetUserObjectId = new ObjectId(targetUserId);
-    
+
         if (!userId || !targetUserId) {
-                return res.status(400).json({ message: "Both userId and targetUserId are required." });
-            }
-    
-        //finding user with user id is following to targetUser or not
+            return res.status(400).json({ message: "Both userId and targetUserId are required." });
+        }
+
         await connectClient();
         const db = client.db("GitHubClone");
         const userCollection = db.collection("users");
-    
-        const user = await userCollection.findOne({_id:userObjectId});
-    
+
+        const user = await userCollection.findOne({ _id: userObjectId });
+
         let isFollowing = user.following?.some(followingId => followingId.toString() === targetUserObjectId.toString());
-    
-        res.json({isFollowing});
+
+        res.json({ isFollowing });
     } catch (error) {
         console.log(error);
     }
-}
+};
 
-const logout = async (req, res) => {
+export const logout = async (req, res) => {
     res.clearCookie("token", {
-        httpOnly: true,  // Prevents JavaScript access
-        secure: process.env.NODE_ENV === "production",  // Secure only in production
-        sameSite: "Lax"  // Adjust if using frontend on a different domain
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "Lax"
     });
     res.status(200).json({ success: true });
-}
-
-module.exports = {
-    getAllUsers,
-    signup,
-    uploadProfileUrl,
-    getProfileUrl,
-    login,
-    getUserProfile,
-    updateUserProfile,
-    deleteUserProfile,
-    getCurrentUsername,
-    following,
-    isFollowing,
-    logout
 };

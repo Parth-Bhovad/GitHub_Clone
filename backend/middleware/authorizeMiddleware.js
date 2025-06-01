@@ -1,6 +1,5 @@
-const jwt = require('jsonwebtoken');
-const dotenv = require("dotenv");
-dotenv.config();
+import jwt from 'jsonwebtoken';
+
 function isLoggedIn(req, res, next) {
     const token = req.cookies.token;
 
@@ -14,7 +13,6 @@ function isLoggedIn(req, res, next) {
     }
 }
 
-
 function isOwner(req, res, next) {
     let { id, username } = req.params;
     if (id) {
@@ -26,4 +24,4 @@ function isOwner(req, res, next) {
     next();
 }
 
-module.exports = {isLoggedIn, isOwner};
+export { isLoggedIn, isOwner };
