@@ -188,7 +188,9 @@ export const push = async (req, res) => {
         let bucketFilePaths = [];
 
         for (const file of files) {
-            const finalUrl = path.join(username, reponame, file.path);
+            const finalUrl = [username, reponame, file.path].join("/");
+            console.log("Uploading file to Supabase:", finalUrl);
+            
             const { data, error } = await supabase
                 .storage
                 .from('.git')
