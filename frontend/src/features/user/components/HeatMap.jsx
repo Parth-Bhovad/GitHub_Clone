@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import HeatMap from "@uiw/react-heat-map";
 
+// Importing CSS for the heat map
+import "../styles/heatmap.css";
+
 // Function to generate random activity
 const generateActivityData = (startDate, endDate) => {
   const data = [];
@@ -52,12 +55,11 @@ const HeatMapProfile = () => {
       <h2 style={{paddingLeft:"2rem"}}>Recent Contributions</h2>
       <HeatMap
         className="HeatMapProfile"
-        style={{ width: "1000px", height: "1000px", color: "white" }}
         value={activityData}
         weekLabels={["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]}
         startDate={new Date("2001-01-01")}
-        rectSize={25}
-        space={5}
+        rectSize={20}
+        space={3}
         rectProps={{
           rx: 2.5,
         }}

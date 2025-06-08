@@ -21,7 +21,7 @@ function useProfileUpload(username) {
             console.error("Upload failed", error);
         }
     };
-    return { handleUpload, setFile };
+    return { handleUpload, setFile, file };
 }
 
 export default useProfileUpload;

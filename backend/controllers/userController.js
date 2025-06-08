@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs";
 import { MongoClient, ObjectId } from "mongodb";
 
 const uri = process.env.MONGODB_URI;
-
 let client;
 
 async function connectClient() {
@@ -137,7 +136,7 @@ export const login = async (req, res) => {
 
         res.json({ token, userId: user._id });
     } catch (error) {
-        console.error("Error during login:", error.message);
+        console.error("Error during login:", error);
     }
 };
 

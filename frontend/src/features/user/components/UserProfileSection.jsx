@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import ProfileImage from "./ProfileImage";
 import FollowBtn from "./FollowBtn";
 import UserFollow from "./UserFollow";
+import Hr from "../../../components/common/Hr";
 
 //importing custom hooks
 import useHandleFollow from "../hooks/useHandleFollow";
@@ -19,12 +20,12 @@ function UserProfileSection() {
     
     const { username } = useParams();
     const { userDetails } = useFetchUserDetails(username);
-    const { handleUpload, setFile } = useProfileUpload(username);
+    const { handleUpload, setFile, file } = useProfileUpload(username);
     const { handleFollow, isFollow } = useHandleFollow(currentUser, userDetails._id);
 
     return (
         <div className="user-profile-section">
-            <ProfileImage profileUrl={userDetails.profileUrl} userDetailsId={userDetails._id} setFile={setFile} handleUpload={handleUpload} />
+            <ProfileImage profileUrl={userDetails.profileUrl} userDetailsId={userDetails._id} setFile={setFile} handleUpload={handleUpload} file={file} />
 
             <div className="name">
                 <h1>{userDetails?.username}</h1>
@@ -33,6 +34,7 @@ function UserProfileSection() {
             <FollowBtn userDetailsId={userDetails._id} handleFollow={handleFollow} isFollow={isFollow} />
 
             <UserFollow followers={userDetails.followers} following={userDetails.following} />
+            <Hr />
         </div>
     );
 }

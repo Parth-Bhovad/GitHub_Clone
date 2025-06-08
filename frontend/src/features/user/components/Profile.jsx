@@ -42,11 +42,10 @@ function Profile() {
                 </UnderlineNav.Item>
             </UnderlineNav>
 
-        <LogoutBtn />
+            <LogoutBtn />
 
             <div className="profile-page-wrapper">
                 <UserProfileSection />
-
                 <div className="heat-map-section">
                     <HeatMapProfile />
                 </div>
